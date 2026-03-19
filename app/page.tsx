@@ -37,8 +37,8 @@ function ParticleCanvas() {
       constructor(w: number, h: number) {
         this.x = Math.random() * w
         this.y = Math.random() * h
-        this.baseVx = (Math.random() - 0.5) * 0.4
-        this.baseVy = (Math.random() - 0.5) * 0.4
+        this.baseVx = (Math.random() - 0.5) * 0.08
+        this.baseVy = (Math.random() - 0.5) * 0.08
         this.vx = this.baseVx
         this.vy = this.baseVy
         this.radius = Math.random() * 0.5 + 1
@@ -48,7 +48,7 @@ function ParticleCanvas() {
         const dx = this.x - mouseX
         const dy = this.y - mouseY
         const dist = Math.sqrt(dx * dx + dy * dy)
-        
+
         if (dist < 120) {
           const force = 0.8
           const ease = (120 - dist) / 120
@@ -95,21 +95,21 @@ function ParticleCanvas() {
     window.addEventListener('resize', resize)
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseleave', handleMouseLeave)
-    
+
     resize()
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
+
       for (let i = 0; i < particles.length; i++) {
         particles[i].update(canvas.width, canvas.height)
         particles[i].draw(ctx)
-        
+
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x
           const dy = particles[i].y - particles[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
-          
+
           if (dist < 100) {
             ctx.beginPath()
             ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - dist / 100) * 0.35})`
@@ -120,10 +120,10 @@ function ParticleCanvas() {
           }
         }
       }
-      
+
       animationFrameId = requestAnimationFrame(animate)
     }
-    
+
     animate()
 
     return () => {
@@ -164,6 +164,22 @@ export default function Home() {
   const [currentQ, setCurrentQ] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+  const [planning, setPlanning] = useState<any>(null)
+  const [diaActivo, setDiaActivo] = useState('Lunes')
+
+  useEffect(() => {
+    if (step !== 'app') return
+    setAiLoading(true)
+    fetch('/api/planning', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ respuestas: answers, nombre }),
+    })
+      .then(r => r.json())
+      .then(data => { setPlanning(data.planning); setAiLoading(false) })
+      .catch(() => setAiLoading(false))
+  }, [step])
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -225,31 +241,31 @@ export default function Home() {
         )}
       </nav>
 
-      <main className="flex-1 flex items-center justify-center px-6 pt-32 pb-12 z-10">
+      <main className="flex-1 flex items-center justify-center min-h-screen px-6 z-10">
 
         {/* LANDING */}
         {step === 'landing' && (
-          <div className="max-w-2xl w-full space-y-12">
+          <div className="max-w-xl w-full text-center space-y-10">
             <div className="space-y-6">
               <div className="font-mono uppercase text-xs tracking-widest text-white/45">
                 pbfocus — planificador personal
               </div>
-              <h1 className="font-serif text-5xl md:text-7xl tracking-tight text-[#e8e8e8] leading-none">
-                Tu día,<br />
-                <span className="text-white/40 italic">bien construido.</span>
+              <h1 className="leading-none flex flex-col items-center">
+                <span className="font-serif text-6xl md:text-7xl text-white">Tu día,</span>
+                <span className="font-serif italic text-6xl md:text-7xl text-white/35">bien construido.</span>
               </h1>
-              <p className="text-white/55 text-sm md:text-base leading-relaxed max-w-lg">
+              <p className="text-white/45 text-sm md:text-base max-w-md mx-auto leading-relaxed">
                 Responde unas preguntas sobre tu situación actual y recibe un planning semanal personalizado. Hábitos, estudio, deporte, descanso — todo en su lugar.
               </p>
             </div>
             <div className="space-y-4">
               <button
                 onClick={() => setStep('register')}
-                className="bg-white text-[#080808] font-medium px-8 py-4 text-xs tracking-wide rounded hover:bg-white/90 transition-colors"
+                className="inline-block bg-white text-[#080808] font-medium px-8 py-4 text-xs tracking-wide rounded hover:bg-white/90 transition-colors"
               >
                 Empezar ahora
               </button>
-              <div className="flex gap-3">
+              <div className="flex justify-center gap-3">
                 <span className="border border-white/10 text-white/30 text-[9px] font-mono rounded-full uppercase tracking-wider px-3 py-1">Gratis</span>
                 <span className="border border-white/10 text-white/30 text-[9px] font-mono rounded-full uppercase tracking-wider px-3 py-1">Sin anuncios</span>
               </div>
@@ -351,20 +367,86 @@ export default function Home() {
 
         {/* APP */}
         {step === 'app' && (
-          <div className="max-w-2xl w-full space-y-8 text-center relative">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-full border border-white/[0.07] bg-white/[0.02] flex items-center justify-center mx-auto">
-                <span className="text-white/60 text-lg">✓</span>
+          <div className="max-w-2xl w-full space-y-10">
+            {aiLoading ? (
+              <div className="flex flex-col items-center justify-center gap-6 py-20">
+                <p className="font-serif italic text-white/40 text-xl">Generando tu planning...</p>
+                <div className="w-64 bg-white/10 rounded-full h-px overflow-hidden">
+                  <div className="bg-white/40 h-px rounded-full animate-[grow_8s_ease-in-out_forwards]" style={{ width: '100%', transform: 'scaleX(0)', transformOrigin: 'left', animation: 'grow 8s ease-in-out forwards' }} />
+                </div>
+                <style>{`@keyframes grow { from { transform: scaleX(0) } to { transform: scaleX(1) } }`}</style>
               </div>
-              <h2 className="text-2xl font-serif text-[#e8e8e8]">Todo listo, {nombre}.</h2>
-              <p className="text-white/45 text-sm max-w-sm mx-auto leading-relaxed">
-                Tus respuestas han sido guardadas. En la próxima fase la IA generará tu planning personalizado aquí.
-              </p>
-            </div>
-            <div className="p-6 border border-white/[0.07] rounded-xl bg-[#0d0d0d] text-left space-y-3">
-              <div className="font-mono uppercase text-xs tracking-widest text-white/45">Próximamente</div>
-              <p className="text-white/55 text-sm">Planning semanal · Chatbot · Calendario</p>
-            </div>
+            ) : planning ? (
+              <div className="space-y-12">
+                <div className="space-y-3">
+                  <h2 className="font-serif text-3xl text-white">Hola, {nombre}.</h2>
+                  <p className="text-white/45 text-sm leading-relaxed">{planning.resumen}</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="font-mono uppercase text-[10px] tracking-widest text-white/30">Tu semana</div>
+                  <div className="flex gap-2 flex-wrap">
+                    {planning.dias.map((d: any) => (
+                      <button
+                        key={d.dia}
+                        onClick={() => setDiaActivo(d.dia)}
+                        className={`px-3 py-1 rounded-full text-[10px] font-mono border transition-colors ${diaActivo === d.dia
+                            ? 'border-white/30 text-white/80 bg-white/[0.06]'
+                            : 'border-white/[0.08] text-white/30 hover:text-white/50'
+                          }`}
+                      >
+                        {d.dia}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="space-y-3 pt-2">
+                    {planning.dias.find((d: any) => d.dia === diaActivo)?.bloques.map((b: any, i: number) => {
+                      const colores: Record<string, string> = {
+                        morning: 'bg-amber-400',
+                        work: 'bg-blue-400',
+                        rest: 'bg-green-400',
+                        sport: 'bg-orange-400',
+                        night: 'bg-purple-400',
+                      }
+                      const fondos: Record<string, string> = {
+                        morning: 'bg-amber-500/10',
+                        work: 'bg-blue-500/10',
+                        rest: 'bg-green-500/10',
+                        sport: 'bg-orange-500/10',
+                        night: 'bg-purple-500/10',
+                      }
+                      return (
+                        <div key={i} className={`flex items-center gap-4 px-4 py-3 rounded-xl border border-white/[0.05] ${fondos[b.tipo]}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${colores[b.tipo]}`} />
+                          <span className="font-mono text-white/30 text-xs w-12 shrink-0">{b.hora}</span>
+                          <span className="text-white/70 text-sm">{b.actividad}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="font-mono uppercase text-[10px] tracking-widest text-white/30">Hábitos clave</div>
+                  <div className="flex flex-wrap gap-2">
+                    {planning.habitos.map((h: string, i: number) => (
+                      <span key={i} className="border border-white/[0.08] rounded-full px-3 py-1 text-xs text-white/50 font-mono">
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="font-mono uppercase text-[10px] tracking-widest text-white/30">Consejo</div>
+                  <div className="border border-white/[0.06] rounded-xl p-5 bg-white/[0.02]">
+                    <p className="text-white/50 text-sm leading-relaxed italic font-serif">{planning.consejo}</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-white/30 text-sm font-mono">Error generando el planning. Recarga la página.</p>
+            )}
           </div>
         )}
 
