@@ -167,6 +167,8 @@ export default function Home() {
   const [aiLoading, setAiLoading] = useState(false)
   const [planning, setPlanning] = useState<any>(null)
   const [diaActivo, setDiaActivo] = useState('Lunes')
+  const [horasMobil, setHorasMobil] = useState<string | null>(null)
+  const [appConsumo, setAppConsumo] = useState<string | null>(null)
 
   useEffect(() => {
     if (step !== 'app') return
@@ -241,35 +243,221 @@ export default function Home() {
         )}
       </nav>
 
-      <main className="flex-1 flex items-center justify-center min-h-screen px-6 z-10">
+      <main className={`flex-1 z-10 ${step === 'landing' ? 'w-full block' : 'flex items-center justify-center min-h-screen px-6'}`}>
 
         {/* LANDING */}
         {step === 'landing' && (
-          <div className="max-w-xl w-full text-center space-y-10">
-            <div className="space-y-6">
-              <div className="font-mono uppercase text-xs tracking-widest text-white/45">
-                pbfocus — planificador personal
+          <div className="w-full">
+            {/* HEROS SECCIÓN 1 */}
+            <section className="min-h-screen flex items-center">
+              <div className="max-w-4xl mx-auto px-8 md:px-16 pt-32 w-full">
+                <style>{`
+                  @keyframes pulse-opacity {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.4; }
+                  }
+                `}</style>
+                <h1 
+                  className="font-serif italic text-6xl md:text-8xl text-white"
+                  style={{ animation: 'pulse-opacity 4s ease-in-out infinite' }}
+                >
+                  pbfocus
+                </h1>
+                <div className="font-mono text-[10px] uppercase tracking-widest text-white/30 mt-4">
+                  planificador personal · productividad · hábitos
+                </div>
+                <p className="font-serif italic text-white/50 text-lg md:text-xl leading-relaxed max-w-2xl mt-8">
+                  "Actualmente vivimos en una era de distracciones y estímulos que nos limitan diariamente. A muchos de mis amigos y a mí incluido nos pasa que no tenemos toda la energía que nos gustaría tener, o no productivizamos nuestros días tanto como quisiéramos. Pero creo en una serie de hábitos y pequeñas conductas que pueden cambiar esto. Te dejo que explores esta web y que te esfuerces en ser mañana un poquito mejor que hoy."
+                </p>
+                <div className="font-mono text-[9px] text-white/20 uppercase tracking-widest mt-16 animate-bounce">
+                  scroll ↓
+                </div>
               </div>
-              <h1 className="leading-none flex flex-col items-center">
-                <span className="font-serif text-6xl md:text-7xl text-white">Tu día,</span>
-                <span className="font-serif italic text-6xl md:text-7xl text-white/35">bien construido.</span>
-              </h1>
-              <p className="text-white/45 text-sm md:text-base max-w-md mx-auto leading-relaxed">
-                Responde unas preguntas sobre tu situación actual y recibe un planning semanal personalizado. Hábitos, estudio, deporte, descanso — todo en su lugar.
+            </section>
+
+            {/* SECCIÓN 2: TEST INTERACTIVO */}
+            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32">
+              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-12">
+                diagnóstico rápido
+              </div>
+              <h2 className="font-serif text-3xl text-white mb-16">
+                ¿Cuánto te roban tu atención y tu energía?
+              </h2>
+
+              <div className="space-y-16">
+                {/* Pregunta 1 */}
+                <div className="space-y-6">
+                  <h3 className="text-white/70 text-sm font-medium">¿Cuántas horas pierdes al día con el móvil?</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    {['1 – 2h', '2 – 3h', '4h o más'].map((opcion) => (
+                      <button
+                        key={opcion}
+                        onClick={() => setHorasMobil(opcion)}
+                        className={`py-4 rounded-xl border text-sm transition-all ${
+                          horasMobil === opcion
+                            ? 'border-white/20 bg-white/[0.04] text-white/90'
+                            : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
+                        }`}
+                      >
+                        {opcion}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  {horasMobil && (
+                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.06] rounded-xl p-6 bg-white/[0.02]">
+                      <h4 className="text-white/80 font-serif text-lg mb-2">
+                        {horasMobil === '1 – 2h' && 'Buen control'}
+                        {horasMobil === '2 – 3h' && 'Zona de riesgo'}
+                        {horasMobil === '4h o más' && 'El móvil te está ganando'}
+                      </h4>
+                      <p className="text-white/40 text-sm leading-relaxed">
+                        {horasMobil === '1 – 2h' && 'Estás por debajo de la media. Con pequeños ajustes puedes optimizar ese tiempo restante y convertirlo en energía real.'}
+                        {horasMobil === '2 – 3h' && 'Ese tiempo equivale a casi un mes entero al año. No es poco. Un par de cambios de hábito pueden recuperar horas valiosas cada semana.'}
+                        {horasMobil === '4h o más' && 'Más de 4 horas diarias es el principal ladrón de energía y foco. La buena noticia: es el hábito más fácil de cambiar con las herramientas correctas.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Pregunta 2 */}
+                <div className="space-y-6">
+                  <h3 className="text-white/70 text-sm font-medium">¿Qué app te consume más tiempo?</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    {['Instagram', 'TikTok', 'X (Twitter)'].map((opcion) => (
+                      <button
+                        key={opcion}
+                        onClick={() => setAppConsumo(opcion)}
+                        className={`py-4 rounded-xl border text-sm transition-all ${
+                          appConsumo === opcion
+                            ? 'border-white/20 bg-white/[0.04] text-white/90'
+                            : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
+                        }`}
+                      >
+                        {opcion}
+                      </button>
+                    ))}
+                  </div>
+
+                  {appConsumo && (
+                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.06] rounded-xl p-8 bg-white/[0.02] space-y-8">
+                      <div>
+                        <h4 className="text-white/80 font-serif text-xl mb-2">Configura One Sec como yo lo tengo</h4>
+                        <p className="text-white/40 text-sm">One Sec añade una pausa de respiración antes de abrir apps adictivas. Así de simple, así de efectivo.</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {/* Paso 1 */}
+                        <div className="space-y-3">
+                          <div className="font-mono text-white/20 text-xs">01</div>
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                            <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
+                          </div>
+                          <h5 className="text-white/70 text-sm font-medium">Descarga One Sec</h5>
+                          <p className="text-white/40 text-xs leading-relaxed">Disponible gratis en App Store y Google Play. Busca 'One Sec' o usa el enlace directo.</p>
+                        </div>
+                        {/* Paso 2 */}
+                        <div className="space-y-3">
+                          <div className="font-mono text-white/20 text-xs">02</div>
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                            <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
+                          </div>
+                          <h5 className="text-white/70 text-sm font-medium">Añade tus apps</h5>
+                          <p className="text-white/40 text-xs leading-relaxed">Abre One Sec → Apps → selecciona {appConsumo}. El proceso es el mismo para las tres.</p>
+                        </div>
+                        {/* Paso 3 */}
+                        <div className="space-y-3">
+                          <div className="font-mono text-white/20 text-xs">03</div>
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                            <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
+                          </div>
+                          <h5 className="text-white/70 text-sm font-medium">Configura la pausa</h5>
+                          <p className="text-white/40 text-xs leading-relaxed">Yo lo tengo en 5 segundos de respiración. Es suficiente para romper el impulso automático.</p>
+                        </div>
+                        {/* Paso 4 */}
+                        <div className="space-y-3">
+                          <div className="font-mono text-white/20 text-xs">04</div>
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                            <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
+                          </div>
+                          <h5 className="text-white/70 text-sm font-medium">Activa los límites</h5>
+                          <p className="text-white/40 text-xs leading-relaxed">En ajustes del sistema, da permisos de Screen Time a One Sec. Sin esto no funciona.</p>
+                        </div>
+                      </div>
+
+                      <a href="https://one-sec.app" target="_blank" rel="noreferrer" className="inline-block border border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 px-5 py-2.5 rounded text-xs font-mono transition-colors">
+                        Descargar One Sec →
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* SECCIÓN 3: IA */}
+            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
+              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">inteligencia artificial</div>
+              <h2 className="font-serif text-3xl text-white mb-4">Tu planning semanal, generado por IA</h2>
+              <p className="text-white/40 text-sm leading-relaxed max-w-lg mb-10">
+                Responde 8 preguntas sobre tu rutina actual y recibe un planning semanal completamente personalizado. Horas de estudio, deporte, descanso, hábitos — todo estructurado según tu situación real, no una plantilla genérica.
               </p>
-            </div>
-            <div className="space-y-4">
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
+                  <h3 className="text-white/70 text-sm font-medium">8 preguntas</h3>
+                  <p className="text-white/30 text-xs mt-1 leading-relaxed">Sobre tu rutina, objetivos y problemas actuales</p>
+                </div>
+                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
+                  <h3 className="text-white/70 text-sm font-medium">Planning 7 días</h3>
+                  <p className="text-white/30 text-xs mt-1 leading-relaxed">Bloques horarios personalizados para toda la semana</p>
+                </div>
+                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
+                  <h3 className="text-white/70 text-sm font-medium">Hábitos clave</h3>
+                  <p className="text-white/30 text-xs mt-1 leading-relaxed">3 hábitos prioritarios según tu situación</p>
+                </div>
+              </div>
+
               <button
                 onClick={() => setStep('register')}
-                className="inline-block bg-white text-[#080808] font-medium px-8 py-4 text-xs tracking-wide rounded hover:bg-white/90 transition-colors"
+                className="bg-white text-[#080808] font-medium px-8 py-3 text-xs tracking-wide rounded hover:bg-white/90 transition-colors"
               >
-                Empezar ahora
+                Crear mi planning →
               </button>
-              <div className="flex justify-center gap-3">
-                <span className="border border-white/10 text-white/30 text-[9px] font-mono rounded-full uppercase tracking-wider px-3 py-1">Gratis</span>
-                <span className="border border-white/10 text-white/30 text-[9px] font-mono rounded-full uppercase tracking-wider px-3 py-1">Sin anuncios</span>
+            </section>
+
+            {/* SECCIÓN 4: ARTÍCULOS */}
+            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
+              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">artículos</div>
+              <h2 className="font-serif text-3xl text-white mb-4">Reflexiones sobre productividad</h2>
+              <p className="text-white/35 text-sm mb-12">
+                Escribo sobre hábitos, energía y desarrollo personal. Sin fórmulas mágicas.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                  <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
+                  <h3 className="text-white/50 text-sm font-medium mb-2">Por qué dormir 8 horas lo cambia todo</h3>
+                  <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
+                </div>
+                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                  <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
+                  <h3 className="text-white/50 text-sm font-medium mb-2">Cómo dejé de mirar el móvil al despertar</h3>
+                  <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
+                </div>
+                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                  <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
+                  <h3 className="text-white/50 text-sm font-medium mb-2">El hábito más pequeño con mayor impacto</h3>
+                  <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
+                </div>
               </div>
-            </div>
+            </section>
+
+            {/* FOOTER */}
+            <footer className="py-16 border-t border-white/[0.04] text-center">
+              <div className="font-mono text-[9px] text-white/20 uppercase tracking-widest">
+                pbfocus © 2026 · hecho con intención
+              </div>
+            </footer>
           </div>
         )}
 
