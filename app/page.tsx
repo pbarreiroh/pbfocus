@@ -26,54 +26,55 @@ function ParticleCanvas() {
     }
 
     class Particle {
-      x: number
-      y: number
-      baseVx: number
-      baseVy: number
-      vx: number
-      vy: number
-      radius: number
+      x: number; y: number; z: number
+      baseVx: number; baseVy: number; baseVz: number
+      vx: number; vy: number; vz: number
 
       constructor(w: number, h: number) {
-        this.x = Math.random() * w
-        this.y = Math.random() * h
+        this.x = (Math.random() - 0.5) * w * 2
+        this.y = (Math.random() - 0.5) * h * 2
+        this.z = Math.random() * 1000
         this.baseVx = (Math.random() - 0.5) * 0.08
         this.baseVy = (Math.random() - 0.5) * 0.08
+        this.baseVz = (Math.random() - 0.5) * 0.3
         this.vx = this.baseVx
         this.vy = this.baseVy
-        this.radius = Math.random() * 0.5 + 1
+        this.vz = this.baseVz
+      }
+
+      project(w: number, h: number) {
+        const fov = 600
+        const scale = fov / (fov + this.z)
+        return {
+          sx: this.x * scale + w / 2,
+          sy: this.y * scale + h / 2,
+          scale,
+        }
       }
 
       update(w: number, h: number) {
-        const dx = this.x - mouseX
-        const dy = this.y - mouseY
-        const dist = Math.sqrt(dx * dx + dy * dy)
-
-        if (dist < 120) {
-          const force = 0.8
-          const ease = (120 - dist) / 120
-          const angle = Math.atan2(dy, dx)
-          this.vx += Math.cos(angle) * force * ease * 0.1
-          this.vy += Math.sin(angle) * force * ease * 0.1
-        }
-
         this.vx += (this.baseVx - this.vx) * 0.05
         this.vy += (this.baseVy - this.vy) * 0.05
-
+        this.vz += (this.baseVz - this.vz) * 0.05
         this.x += this.vx
         this.y += this.vy
-
-        // Wrap
-        if (this.x < 0) this.x = w
-        if (this.x > w) this.x = 0
-        if (this.y < 0) this.y = h
-        if (this.y > h) this.y = 0
+        this.z += this.vz
+        if (this.z > 1000) this.z = 0
+        if (this.z < 0) this.z = 1000
+        if (this.x < -w) this.x = w
+        if (this.x > w) this.x = -w
+        if (this.y < -h) this.y = h
+        if (this.y > h) this.y = -h
       }
 
-      draw(ctx: CanvasRenderingContext2D) {
+      draw(ctx: CanvasRenderingContext2D, w: number, h: number) {
+        const { sx, sy, scale } = this.project(w, h)
+        if (sx < 0 || sx > w || sy < 0 || sy > h) return
+        const radius = scale * 1.5
+        const opacity = scale * 0.9
         ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`
+        ctx.arc(sx, sy, Math.max(0.3, radius), 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,255,255,${opacity})`
         ctx.fill()
       }
     }
@@ -103,19 +104,22 @@ function ParticleCanvas() {
 
       for (let i = 0; i < particles.length; i++) {
         particles[i].update(canvas.width, canvas.height)
-        particles[i].draw(ctx)
-
+        const pi = particles[i].project(canvas.width, canvas.height)
+        if (pi.sx < 0 || pi.sx > canvas.width || pi.sy < 0 || pi.sy > canvas.height) continue
+        particles[i].draw(ctx, canvas.width, canvas.height)
         for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
+          const pj = particles[j].project(canvas.width, canvas.height)
+          if (pj.sx < 0 || pj.sx > canvas.width || pj.sy < 0 || pj.sy > canvas.height) continue
+          const dx = pi.sx - pj.sx
+          const dy = pi.sy - pj.sy
           const dist = Math.sqrt(dx * dx + dy * dy)
-
           if (dist < 100) {
+            const avgScale = (pi.scale + pj.scale) / 2
             ctx.beginPath()
-            ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - dist / 100) * 0.35})`
-            ctx.lineWidth = 1
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
+            ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / 100) * 0.35 * avgScale})`
+            ctx.lineWidth = avgScale
+            ctx.moveTo(pi.sx, pi.sy)
+            ctx.lineTo(pj.sx, pj.sy)
             ctx.stroke()
           }
         }
@@ -232,17 +236,17 @@ export default function Home() {
 
       {/* Nav */}
       <nav className="bg-[rgba(8,8,8,0.85)] backdrop-blur border-b border-white/[0.04] fixed top-0 w-full z-50 px-6 py-5 flex items-center justify-between">
-        <span className="font-mono text-white/55 text-sm tracking-wider">pbfocus</span>
+        <span className="font-mono text-white/70 text-sm tracking-wider">pbfocus</span>
         
         {step === 'landing' && (
           <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-8">
-            <button onClick={() => document.getElementById('ia')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+            <button onClick={() => document.getElementById('ia')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/80 hover:text-white transition-colors">
               Inteligencia artificial
             </button>
-            <button onClick={() => document.getElementById('diagnostico')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+            <button onClick={() => document.getElementById('diagnostico')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/80 hover:text-white transition-colors">
               Diagnóstico rápido
             </button>
-            <button onClick={() => document.getElementById('articulos')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+            <button onClick={() => document.getElementById('articulos')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/80 hover:text-white transition-colors">
               Artículos
             </button>
           </div>
@@ -251,7 +255,7 @@ export default function Home() {
         {step === 'landing' && (
           <button
             onClick={() => setStep('register')}
-            className="text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors"
+            className="text-[10px] uppercase tracking-widest text-white/80 hover:text-white transition-colors"
           >
             Empezar →
           </button>
@@ -264,48 +268,68 @@ export default function Home() {
         {step === 'landing' && (
           <div className="w-full">
             {/* HEROS SECCIÓN 1 */}
-            <section className="min-h-screen flex items-center">
-              <div className="max-w-6xl mx-auto px-4 md:px-8 pt-24 w-full">
+            <section className="min-h-screen flex items-center opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="w-full px-12 md:px-20 pt-28 pb-20">
                 <style>{`
-                  @keyframes pulse-opacity {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.4; }
+                  @keyframes title-float {
+                    0%, 100% { transform: translateY(0px) skewX(0deg); opacity: 1; }
+                    25% { transform: translateY(-6px) skewX(-0.5deg); opacity: 0.85; }
+                    75% { transform: translateY(3px) skewX(0.3deg); opacity: 0.9; }
                   }
                 `}</style>
                 <h1
-                  className="font-serif italic text-6xl md:text-8xl text-white"
-                  style={{ animation: 'pulse-opacity 4s ease-in-out infinite' }}
+                  className="font-serif italic text-white leading-none"
+                  style={{
+                    fontSize: 'clamp(80px, 12vw, 160px)',
+                    animation: 'title-float 6s ease-in-out infinite',
+                    display: 'inline-block',
+                  }}
                 >
                   pbfocus
                 </h1>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-white/30 mt-4">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-white/25 mt-5 mb-12">
                   planificador personal · productividad · hábitos
                 </div>
-                <p className="font-serif italic text-white/50 text-lg md:text-xl leading-relaxed max-w-2xl mt-8">
-                  "Actualmente vivimos en una era de distracciones y estímulos que nos limitan diariamente. A muchos de mis amigos y a mí incluido nos pasa que no tenemos toda la energía que nos gustaría tener, o no productivizamos nuestros días tanto como quisiéramos. Pero creo en una serie de hábitos y pequeñas conductas que pueden cambiar esto. Te dejo que explores esta web y que te esfuerces en ser mañana un poquito mejor que hoy."
+                <p
+                  className="font-serif italic text-white/50 leading-loose"
+                  style={{
+                    fontSize: 'clamp(15px, 1.6vw, 20px)',
+                    maxWidth: '72ch',
+                    letterSpacing: '0.01em',
+                  }}
+                >
+                  Actualmente vivimos en una era de distracciones y estímulos que nos limitan diariamente.
+                  A muchos de mis amigos y a mí incluido nos pasa que no tenemos toda la energía que nos
+                  gustaría tener, o no productivizamos nuestros días tanto como quisiéramos. Pero creo en
+                  una serie de hábitos y pequeñas conductas que pueden cambiar esto.{' '}
+                  <span className="text-white/75">
+                    Te dejo que explores esta web y que te esfuerces en ser mañana un poquito mejor que hoy.
+                  </span>
                 </p>
-                <div className="font-mono text-[9px] text-white/20 uppercase tracking-widest mt-16 animate-bounce">
+                <div className="font-mono text-[9px] text-white/18 uppercase tracking-widest mt-20 animate-bounce">
                   scroll ↓
                 </div>
               </div>
             </section>
 
-            {/* SECCIÓN 2: IA */}
-            <section id="ia" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
-              <div className="border border-white/20 rounded-2xl p-12 bg-white/[0.02]">
-                <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">inteligencia artificial</div>
-                <h2 className="font-serif text-3xl text-white mb-4">Tu planning semanal, generado por IA</h2>
-                <p className="text-white/40 text-sm leading-relaxed max-w-lg mb-10">
-                  Responde 8 preguntas sobre tu rutina actual y recibe un planning semanal completamente personalizado. Horas de estudio, deporte, descanso, hábitos — todo estructurado según tu situación real, no una plantilla genérica.
+            {/* SECCIÓN 3: IA */}
+            <section id="ia" className="px-8 md:px-16 py-32 border-t border-white/[0.10] opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="max-w-3xl mx-auto border border-white/35 rounded-2xl p-12 bg-white/[0.02] flex flex-col items-center text-center">
+                <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">
+                  inteligencia artificial
+                </div>
+                <h2 className="font-serif text-4xl text-white mb-5">
+                  Tu planning semanal, generado por IA
+                </h2>
+                <p className="text-white/55 text-sm leading-relaxed max-w-md mb-8">
+                  Responde 8 preguntas sobre tu rutina actual y recibe un planning semanal completamente personalizado. Horas de estudio, deporte, descanso, hábitos — todo estructurado según tu situación real.
                 </p>
-                
-                <div className="font-mono text-[9px] text-white/30 tracking-widest text-center mb-8">
+                <div className="font-mono text-[9px] text-white/45 tracking-widest mb-10">
                   8 preguntas · planning 7 días · 3 hábitos clave
                 </div>
-
                 <button
                   onClick={() => setStep('register')}
-                  className="block mx-auto bg-white text-[#080808] font-medium px-16 py-4 text-sm tracking-wide rounded-md hover:bg-white/90 transition-colors"
+                  className="bg-white text-[#080808] font-medium px-16 py-4 text-sm tracking-wide rounded-md hover:bg-white/90 transition-colors"
                 >
                   Crear mi planning →
                 </button>
@@ -313,8 +337,8 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 3: TEST INTERACTIVO */}
-            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32">
-              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-12">
+            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-12">
                 diagnóstico rápido
               </div>
               <h2 className="font-serif text-3xl text-white mb-16">
@@ -329,10 +353,10 @@ export default function Home() {
                     {['1 – 2h', '2 – 3h', '4h o más'].map((opcion) => (
                       <button
                         key={opcion}
-                        onClick={() => setHorasMobil(opcion)}
+                        onClick={() => setHorasMobil(prev => prev === opcion ? null : opcion)}
                         className={`py-4 rounded-xl border text-sm transition-all ${horasMobil === opcion
                             ? 'border-white/20 bg-white/[0.04] text-white/90'
-                            : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
+                            : 'border-white/[0.10] bg-white/[0.01] text-white/55 hover:bg-white/[0.02]'
                           }`}
                       >
                         {opcion}
@@ -341,13 +365,13 @@ export default function Home() {
                   </div>
 
                   {horasMobil && (
-                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.06] rounded-xl p-6 bg-white/[0.02]">
+                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.12] rounded-xl p-6 bg-white/[0.02]">
                       <h4 className="text-white/80 font-serif text-lg mb-2">
                         {horasMobil === '1 – 2h' && 'Buen control'}
                         {horasMobil === '2 – 3h' && 'Zona de riesgo'}
                         {horasMobil === '4h o más' && 'El móvil te está ganando'}
                       </h4>
-                      <p className="text-white/40 text-sm leading-relaxed">
+                      <p className="text-white/55 text-sm leading-relaxed">
                         {horasMobil === '1 – 2h' && 'Estás por debajo de la media. Con pequeños ajustes puedes optimizar ese tiempo restante y convertirlo en energía real.'}
                         {horasMobil === '2 – 3h' && 'Ese tiempo equivale a casi un mes entero al año. No es poco. Un par de cambios de hábito pueden recuperar horas valiosas cada semana.'}
                         {horasMobil === '4h o más' && 'Más de 4 horas diarias es el principal ladrón de energía y foco. La buena noticia: es el hábito más fácil de cambiar con las herramientas correctas.'}
@@ -363,10 +387,10 @@ export default function Home() {
                     {['Instagram', 'TikTok', 'X (Twitter)'].map((opcion) => (
                       <button
                         key={opcion}
-                        onClick={() => setAppConsumo(opcion)}
+                        onClick={() => setAppConsumo(prev => prev === opcion ? null : opcion)}
                         className={`py-4 rounded-xl border text-sm transition-all ${appConsumo === opcion
                             ? 'border-white/20 bg-white/[0.04] text-white/90'
-                            : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
+                            : 'border-white/[0.10] bg-white/[0.01] text-white/55 hover:bg-white/[0.02]'
                           }`}
                       >
                         {opcion}
@@ -375,48 +399,48 @@ export default function Home() {
                   </div>
 
                   {appConsumo && (
-                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.06] rounded-xl p-8 bg-white/[0.02] space-y-8">
+                    <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.12] rounded-xl p-8 bg-white/[0.02] space-y-8">
                       <div>
                         <h4 className="text-white/80 font-serif text-xl mb-2">Configura One Sec como yo lo tengo</h4>
-                        <p className="text-white/40 text-sm">One Sec añade una pausa de respiración antes de abrir apps adictivas. Así de simple, así de efectivo.</p>
+                        <p className="text-white/55 text-sm">One Sec añade una pausa de respiración antes de abrir apps adictivas. Así de simple, así de efectivo.</p>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Paso 1 */}
                         <div className="space-y-3">
                           <div className="font-mono text-white/20 text-xs">01</div>
-                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.12] rounded-xl flex items-center justify-center">
                             <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
                           </div>
                           <h5 className="text-white/70 text-sm font-medium">Descarga One Sec</h5>
-                          <p className="text-white/40 text-xs leading-relaxed">Disponible gratis en App Store y Google Play. Busca 'One Sec' o usa el enlace directo.</p>
+                          <p className="text-white/55 text-xs leading-relaxed">Disponible gratis en App Store y Google Play. Busca 'One Sec' o usa el enlace directo.</p>
                         </div>
                         {/* Paso 2 */}
                         <div className="space-y-3">
                           <div className="font-mono text-white/20 text-xs">02</div>
-                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.12] rounded-xl flex items-center justify-center">
                             <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
                           </div>
                           <h5 className="text-white/70 text-sm font-medium">Añade tus apps</h5>
-                          <p className="text-white/40 text-xs leading-relaxed">Abre One Sec → Apps → selecciona {appConsumo}. El proceso es el mismo para las tres.</p>
+                          <p className="text-white/55 text-xs leading-relaxed">Abre One Sec → Apps → selecciona {appConsumo}. El proceso es el mismo para las tres.</p>
                         </div>
                         {/* Paso 3 */}
                         <div className="space-y-3">
                           <div className="font-mono text-white/20 text-xs">03</div>
-                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.12] rounded-xl flex items-center justify-center">
                             <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
                           </div>
                           <h5 className="text-white/70 text-sm font-medium">Configura la pausa</h5>
-                          <p className="text-white/40 text-xs leading-relaxed">Yo lo tengo en 5 segundos de respiración. Es suficiente para romper el impulso automático.</p>
+                          <p className="text-white/55 text-xs leading-relaxed">Yo lo tengo en 5 segundos de respiración. Es suficiente para romper el impulso automático.</p>
                         </div>
                         {/* Paso 4 */}
                         <div className="space-y-3">
                           <div className="font-mono text-white/20 text-xs">04</div>
-                          <div className="aspect-video bg-white/[0.03] border border-white/[0.06] rounded-xl flex items-center justify-center">
+                          <div className="aspect-video bg-white/[0.03] border border-white/[0.12] rounded-xl flex items-center justify-center">
                             <span className="font-mono text-white/15 text-[9px]">captura · próximamente</span>
                           </div>
                           <h5 className="text-white/70 text-sm font-medium">Activa los límites</h5>
-                          <p className="text-white/40 text-xs leading-relaxed">En ajustes del sistema, da permisos de Screen Time a One Sec. Sin esto no funciona.</p>
+                          <p className="text-white/55 text-xs leading-relaxed">En ajustes del sistema, da permisos de Screen Time a One Sec. Sin esto no funciona.</p>
                         </div>
                       </div>
 
@@ -430,25 +454,25 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 4: ARTÍCULOS */}
-            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
-              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">artículos</div>
+            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.10] opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">artículos</div>
               <h2 className="font-serif text-3xl text-white mb-4">Reflexiones sobre productividad</h2>
               <p className="text-white/35 text-sm mb-12">
                 Comparto reflexiones y experiencias sobre productividad, energía y desarrollo personal.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                <div className="border border-white/[0.12] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
                   <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
                   <h3 className="text-white/50 text-sm font-medium mb-2">Por qué dormir 8 horas lo cambia todo</h3>
                   <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
                 </div>
-                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                <div className="border border-white/[0.12] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
                   <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
                   <h3 className="text-white/50 text-sm font-medium mb-2">Cómo dejé de mirar el móvil al despertar</h3>
                   <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
                 </div>
-                <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
+                <div className="border border-white/[0.12] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
                   <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
                   <h3 className="text-white/50 text-sm font-medium mb-2">El hábito más pequeño con mayor impacto</h3>
                   <p className="text-white/25 text-xs leading-relaxed">Artículo en preparación.</p>
@@ -468,6 +492,12 @@ export default function Home() {
         {/* REGISTER */}
         {step === 'register' && (
           <div className="max-w-md w-full space-y-8 bg-[#0d0d0d] p-8 border border-white/[0.07] rounded-xl relative">
+            <button
+              onClick={() => setStep('landing')}
+              className="absolute top-4 right-4 text-white/30 hover:text-white/80 transition-colors text-lg font-light"
+            >
+              ✕
+            </button>
             <div className="space-y-2">
               <div className="font-mono uppercase text-xs tracking-widest text-white/45">Paso 1 de 3</div>
               <h2 className="text-2xl font-serif text-[#e8e8e8]">¿Cómo te llamas?</h2>
