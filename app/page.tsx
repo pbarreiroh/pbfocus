@@ -26,55 +26,44 @@ function ParticleCanvas() {
     }
 
     class Particle {
-      x: number; y: number; z: number
-      baseVx: number; baseVy: number; baseVz: number
-      vx: number; vy: number; vz: number
+      x: number; y: number
+      baseVx: number; baseVy: number
+      vx: number; vy: number
+      radius: number
 
       constructor(w: number, h: number) {
-        this.x = (Math.random() - 0.5) * w * 2
-        this.y = (Math.random() - 0.5) * h * 2
-        this.z = Math.random() * 1000
+        this.x = Math.random() * w
+        this.y = Math.random() * h
         this.baseVx = (Math.random() - 0.5) * 0.08
         this.baseVy = (Math.random() - 0.5) * 0.08
-        this.baseVz = (Math.random() - 0.5) * 0.3
         this.vx = this.baseVx
         this.vy = this.baseVy
-        this.vz = this.baseVz
+        this.radius = Math.random() * 0.5 + 1
       }
 
-      project(w: number, h: number) {
-        const fov = 600
-        const scale = fov / (fov + this.z)
-        return {
-          sx: this.x * scale + w / 2,
-          sy: this.y * scale + h / 2,
-          scale,
+      update(w: number, h: number, mx: number, my: number) {
+        const dx = this.x - mx
+        const dy = this.y - my
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < 120 && dist > 0) {
+          const force = (120 - dist) / 120 * 0.8
+          this.vx += (dx / dist) * force * 0.3
+          this.vy += (dy / dist) * force * 0.3
         }
-      }
-
-      update(w: number, h: number) {
         this.vx += (this.baseVx - this.vx) * 0.05
         this.vy += (this.baseVy - this.vy) * 0.05
-        this.vz += (this.baseVz - this.vz) * 0.05
         this.x += this.vx
         this.y += this.vy
-        this.z += this.vz
-        if (this.z > 1000) this.z = 0
-        if (this.z < 0) this.z = 1000
-        if (this.x < -w) this.x = w
-        if (this.x > w) this.x = -w
-        if (this.y < -h) this.y = h
-        if (this.y > h) this.y = -h
+        if (this.x < 0) this.x = w
+        if (this.x > w) this.x = 0
+        if (this.y < 0) this.y = h
+        if (this.y > h) this.y = 0
       }
 
-      draw(ctx: CanvasRenderingContext2D, w: number, h: number) {
-        const { sx, sy, scale } = this.project(w, h)
-        if (sx < 0 || sx > w || sy < 0 || sy > h) return
-        const radius = scale * 1.5
-        const opacity = scale * 0.9
+      draw(ctx: CanvasRenderingContext2D) {
         ctx.beginPath()
-        ctx.arc(sx, sy, Math.max(0.3, radius), 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,255,255,${opacity})`
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,255,255,${0.5 + Math.random() * 0.5})`
         ctx.fill()
       }
     }
@@ -101,30 +90,23 @@ function ParticleCanvas() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-
       for (let i = 0; i < particles.length; i++) {
-        particles[i].update(canvas.width, canvas.height)
-        const pi = particles[i].project(canvas.width, canvas.height)
-        if (pi.sx < 0 || pi.sx > canvas.width || pi.sy < 0 || pi.sy > canvas.height) continue
-        particles[i].draw(ctx, canvas.width, canvas.height)
+        particles[i].update(canvas.width, canvas.height, mouseX, mouseY)
+        particles[i].draw(ctx)
         for (let j = i + 1; j < particles.length; j++) {
-          const pj = particles[j].project(canvas.width, canvas.height)
-          if (pj.sx < 0 || pj.sx > canvas.width || pj.sy < 0 || pj.sy > canvas.height) continue
-          const dx = pi.sx - pj.sx
-          const dy = pi.sy - pj.sy
+          const dx = particles[i].x - particles[j].x
+          const dy = particles[i].y - particles[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < 100) {
-            const avgScale = (pi.scale + pj.scale) / 2
             ctx.beginPath()
-            ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / 100) * 0.35 * avgScale})`
-            ctx.lineWidth = avgScale
-            ctx.moveTo(pi.sx, pi.sy)
-            ctx.lineTo(pj.sx, pj.sy)
+            ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / 100) * 0.35})`
+            ctx.lineWidth = 1
+            ctx.moveTo(particles[i].x, particles[i].y)
+            ctx.lineTo(particles[j].x, particles[j].y)
             ctx.stroke()
           }
         }
       }
-
       animationFrameId = requestAnimationFrame(animate)
     }
 
@@ -187,6 +169,20 @@ export default function Home() {
       .catch(() => setAiLoading(false))
   }, [step])
 
+  useEffect(() => {
+    if (step !== 'landing') return
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.1 })
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+    return () => observer.disconnect()
+  }, [step])
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -228,6 +224,36 @@ export default function Home() {
 
   const progress = ((currentQ + 1) / QUESTIONS.length) * 100
 
+  const SubtitleFlash = () => {
+    const [lit, setLit] = useState<number | null>(null)
+    useEffect(() => {
+      let timeout: ReturnType<typeof setTimeout>
+      const flash = () => {
+        const idx = Math.floor(Math.random() * 3)
+        setLit(idx)
+        timeout = setTimeout(() => {
+          setLit(null)
+          timeout = setTimeout(flash, 4000 + Math.random() * 3000)
+        }, 1000)
+      }
+      timeout = setTimeout(flash, 2000)
+      return () => clearTimeout(timeout)
+    }, [])
+    const words = ['planificador personal', 'productividad', 'hábitos']
+    return (
+      <div className="font-mono text-[10px] uppercase tracking-widest mt-5 mb-12">
+        {words.map((w, i) => (
+          <span key={i}>
+            <span style={{ color: lit === i ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.22)', transition: 'color 0.7s ease' }}>
+              {w}
+            </span>
+            {i < 2 && <span style={{ color: 'rgba(255,255,255,0.1)' }}> · </span>}
+          </span>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative">
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -254,7 +280,7 @@ export default function Home() {
 
         {step === 'landing' && (
           <button
-            onClick={() => setStep('register')}
+            onClick={() => window.location.href = '/chat'}
             className="text-[10px] uppercase tracking-widest text-white/80 hover:text-white transition-colors"
           >
             Empezar →
@@ -268,28 +294,37 @@ export default function Home() {
         {step === 'landing' && (
           <div className="w-full">
             {/* HEROS SECCIÓN 1 */}
-            <section className="min-h-screen flex items-center">
+            <section className="min-h-screen flex items-center reveal">
               <div className="w-full px-12 md:px-20 pt-28 pb-20">
                 <style>{`
                   @keyframes title-float {
-                    0%, 100% { transform: translateY(0px) skewX(0deg); opacity: 1; }
-                    25% { transform: translateY(-6px) skewX(-0.5deg); opacity: 0.85; }
-                    75% { transform: translateY(3px) skewX(0.3deg); opacity: 0.9; }
+                    0%, 100% { transform: translateY(0px) skewX(0deg); }
+                    25% { transform: translateY(-6px) skewX(-0.5deg); }
+                    75% { transform: translateY(3px) skewX(0.3deg); }
+                  }
+                  @keyframes sweep {
+                    0%   { background-position: 160% center; }
+                    35%  { background-position: 160% center; }
+                    65%  { background-position: -60% center; }
+                    100% { background-position: -60% center; }
                   }
                 `}</style>
                 <h1
-                  className="font-serif italic text-white leading-none"
+                  className="font-serif italic leading-none"
                   style={{
                     fontSize: 'clamp(80px, 12vw, 160px)',
-                    animation: 'title-float 6s ease-in-out infinite',
                     display: 'inline-block',
+                    animation: 'title-float 6s ease-in-out infinite, sweep 10s ease-in-out infinite',
+                    background: 'linear-gradient(105deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 25%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,1) 42%, rgba(255,255,255,0.95) 49%, rgba(255,255,255,0.4) 59%, rgba(255,255,255,0.4) 100%)',
+                    backgroundSize: '400% 100%',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
                   }}
                 >
                   pbfocus
                 </h1>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-white/25 mt-5 mb-12">
-                  planificador personal · productividad · hábitos
-                </div>
+                <SubtitleFlash />
                 <p
                   className="font-serif italic text-white/50 leading-loose"
                   style={{
@@ -313,7 +348,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 3: IA */}
-            <section id="ia" className="px-8 md:px-16 py-32 border-t border-white/[0.10]">
+            <section id="ia" className="px-8 md:px-16 py-32 reveal">
               <div className="max-w-3xl mx-auto border border-white/35 rounded-2xl p-12 bg-white/[0.02] flex flex-col items-center text-center">
                 <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">
                   inteligencia artificial
@@ -328,7 +363,7 @@ export default function Home() {
                   8 preguntas · planning 7 días · 3 hábitos clave
                 </div>
                 <button
-                  onClick={() => setStep('register')}
+                  onClick={() => window.location.href = '/chat'}
                   className="bg-white text-[#080808] font-medium px-16 py-4 text-sm tracking-wide rounded-md hover:bg-white/90 transition-colors"
                 >
                   Crear mi planning →
@@ -337,7 +372,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 3: TEST INTERACTIVO */}
-            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32">
+            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32 reveal">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-12">
                 diagnóstico rápido
               </div>
@@ -454,7 +489,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 4: ARTÍCULOS */}
-            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.10]">
+            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.10] reveal">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">artículos</div>
               <h2 className="font-serif text-3xl text-white mb-4">Reflexiones sobre productividad</h2>
               <p className="text-white/35 text-sm mb-12">
