@@ -233,6 +233,21 @@ export default function Home() {
       {/* Nav */}
       <nav className="bg-[rgba(8,8,8,0.85)] backdrop-blur border-b border-white/[0.04] fixed top-0 w-full z-50 px-6 py-5 flex items-center justify-between">
         <span className="font-mono text-white/55 text-sm tracking-wider">pbfocus</span>
+        
+        {step === 'landing' && (
+          <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-8">
+            <button onClick={() => document.getElementById('ia')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+              Inteligencia artificial
+            </button>
+            <button onClick={() => document.getElementById('diagnostico')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+              Diagnóstico rápido
+            </button>
+            <button onClick={() => document.getElementById('articulos')?.scrollIntoView({ behavior: 'smooth' })} className="font-mono text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+              Artículos
+            </button>
+          </div>
+        )}
+
         {step === 'landing' && (
           <button
             onClick={() => setStep('register')}
@@ -250,14 +265,14 @@ export default function Home() {
           <div className="w-full">
             {/* HEROS SECCIÓN 1 */}
             <section className="min-h-screen flex items-center">
-              <div className="max-w-4xl mx-auto px-8 md:px-16 pt-32 w-full">
+              <div className="max-w-6xl mx-auto px-4 md:px-8 pt-24 w-full">
                 <style>{`
                   @keyframes pulse-opacity {
                     0%, 100% { opacity: 1; }
                     50% { opacity: 0.4; }
                   }
                 `}</style>
-                <h1 
+                <h1
                   className="font-serif italic text-6xl md:text-8xl text-white"
                   style={{ animation: 'pulse-opacity 4s ease-in-out infinite' }}
                 >
@@ -275,8 +290,30 @@ export default function Home() {
               </div>
             </section>
 
-            {/* SECCIÓN 2: TEST INTERACTIVO */}
-            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32">
+            {/* SECCIÓN 2: IA */}
+            <section id="ia" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
+              <div className="border border-white/20 rounded-2xl p-12 bg-white/[0.02]">
+                <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">inteligencia artificial</div>
+                <h2 className="font-serif text-3xl text-white mb-4">Tu planning semanal, generado por IA</h2>
+                <p className="text-white/40 text-sm leading-relaxed max-w-lg mb-10">
+                  Responde 8 preguntas sobre tu rutina actual y recibe un planning semanal completamente personalizado. Horas de estudio, deporte, descanso, hábitos — todo estructurado según tu situación real, no una plantilla genérica.
+                </p>
+                
+                <div className="font-mono text-[9px] text-white/30 tracking-widest text-center mb-8">
+                  8 preguntas · planning 7 días · 3 hábitos clave
+                </div>
+
+                <button
+                  onClick={() => setStep('register')}
+                  className="block mx-auto bg-white text-[#080808] font-medium px-16 py-4 text-sm tracking-wide rounded-md hover:bg-white/90 transition-colors"
+                >
+                  Crear mi planning →
+                </button>
+              </div>
+            </section>
+
+            {/* SECCIÓN 3: TEST INTERACTIVO */}
+            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-12">
                 diagnóstico rápido
               </div>
@@ -293,17 +330,16 @@ export default function Home() {
                       <button
                         key={opcion}
                         onClick={() => setHorasMobil(opcion)}
-                        className={`py-4 rounded-xl border text-sm transition-all ${
-                          horasMobil === opcion
+                        className={`py-4 rounded-xl border text-sm transition-all ${horasMobil === opcion
                             ? 'border-white/20 bg-white/[0.04] text-white/90'
                             : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
-                        }`}
+                          }`}
                       >
                         {opcion}
                       </button>
                     ))}
                   </div>
-                  
+
                   {horasMobil && (
                     <div className="animate-in fade-in slide-in-from-top-4 duration-500 mt-6 border border-white/[0.06] rounded-xl p-6 bg-white/[0.02]">
                       <h4 className="text-white/80 font-serif text-lg mb-2">
@@ -328,11 +364,10 @@ export default function Home() {
                       <button
                         key={opcion}
                         onClick={() => setAppConsumo(opcion)}
-                        className={`py-4 rounded-xl border text-sm transition-all ${
-                          appConsumo === opcion
+                        className={`py-4 rounded-xl border text-sm transition-all ${appConsumo === opcion
                             ? 'border-white/20 bg-white/[0.04] text-white/90'
                             : 'border-white/[0.04] bg-white/[0.01] text-white/40 hover:bg-white/[0.02]'
-                        }`}
+                          }`}
                       >
                         {opcion}
                       </button>
@@ -394,45 +429,14 @@ export default function Home() {
               </div>
             </section>
 
-            {/* SECCIÓN 3: IA */}
-            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
-              <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">inteligencia artificial</div>
-              <h2 className="font-serif text-3xl text-white mb-4">Tu planning semanal, generado por IA</h2>
-              <p className="text-white/40 text-sm leading-relaxed max-w-lg mb-10">
-                Responde 8 preguntas sobre tu rutina actual y recibe un planning semanal completamente personalizado. Horas de estudio, deporte, descanso, hábitos — todo estructurado según tu situación real, no una plantilla genérica.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
-                  <h3 className="text-white/70 text-sm font-medium">8 preguntas</h3>
-                  <p className="text-white/30 text-xs mt-1 leading-relaxed">Sobre tu rutina, objetivos y problemas actuales</p>
-                </div>
-                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
-                  <h3 className="text-white/70 text-sm font-medium">Planning 7 días</h3>
-                  <p className="text-white/30 text-xs mt-1 leading-relaxed">Bloques horarios personalizados para toda la semana</p>
-                </div>
-                <div className="border border-white/[0.06] rounded-xl p-4 bg-white/[0.01]">
-                  <h3 className="text-white/70 text-sm font-medium">Hábitos clave</h3>
-                  <p className="text-white/30 text-xs mt-1 leading-relaxed">3 hábitos prioritarios según tu situación</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setStep('register')}
-                className="bg-white text-[#080808] font-medium px-8 py-3 text-xs tracking-wide rounded hover:bg-white/90 transition-colors"
-              >
-                Crear mi planning →
-              </button>
-            </section>
-
             {/* SECCIÓN 4: ARTÍCULOS */}
-            <section className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
+            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.04]">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/30 mb-6">artículos</div>
               <h2 className="font-serif text-3xl text-white mb-4">Reflexiones sobre productividad</h2>
               <p className="text-white/35 text-sm mb-12">
-                Escribo sobre hábitos, energía y desarrollo personal. Sin fórmulas mágicas.
+                Comparto reflexiones y experiencias sobre productividad, energía y desarrollo personal.
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="border border-white/[0.06] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
                   <div className="font-mono text-[9px] text-white/25 uppercase tracking-wider mb-3">próximamente</div>
@@ -455,7 +459,7 @@ export default function Home() {
             {/* FOOTER */}
             <footer className="py-16 border-t border-white/[0.04] text-center">
               <div className="font-mono text-[9px] text-white/20 uppercase tracking-widest">
-                pbfocus © 2026 · hecho con intención
+                pbfocus © 2026 · based on my purpose
               </div>
             </footer>
           </div>
@@ -579,8 +583,8 @@ export default function Home() {
                         key={d.dia}
                         onClick={() => setDiaActivo(d.dia)}
                         className={`px-3 py-1 rounded-full text-[10px] font-mono border transition-colors ${diaActivo === d.dia
-                            ? 'border-white/30 text-white/80 bg-white/[0.06]'
-                            : 'border-white/[0.08] text-white/30 hover:text-white/50'
+                          ? 'border-white/30 text-white/80 bg-white/[0.06]'
+                          : 'border-white/[0.08] text-white/30 hover:text-white/50'
                           }`}
                       >
                         {d.dia}
