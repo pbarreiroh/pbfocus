@@ -268,7 +268,7 @@ export default function Home() {
         {step === 'landing' && (
           <div className="w-full">
             {/* HEROS SECCIÓN 1 */}
-            <section className="min-h-screen flex items-center opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <section className="min-h-screen flex items-center">
               <div className="w-full px-12 md:px-20 pt-28 pb-20">
                 <style>{`
                   @keyframes title-float {
@@ -313,7 +313,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 3: IA */}
-            <section id="ia" className="px-8 md:px-16 py-32 border-t border-white/[0.10] opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <section id="ia" className="px-8 md:px-16 py-32 border-t border-white/[0.10]">
               <div className="max-w-3xl mx-auto border border-white/35 rounded-2xl p-12 bg-white/[0.02] flex flex-col items-center text-center">
                 <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">
                   inteligencia artificial
@@ -337,7 +337,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 3: TEST INTERACTIVO */}
-            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <section id="diagnostico" className="max-w-4xl mx-auto px-8 md:px-16 py-32">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-12">
                 diagnóstico rápido
               </div>
@@ -454,7 +454,7 @@ export default function Home() {
             </section>
 
             {/* SECCIÓN 4: ARTÍCULOS */}
-            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.10] opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <section id="articulos" className="max-w-4xl mx-auto px-8 md:px-16 py-32 border-t border-white/[0.10]">
               <div className="font-mono uppercase text-[10px] tracking-widest text-white/45 mb-6">artículos</div>
               <h2 className="font-serif text-3xl text-white mb-4">Reflexiones sobre productividad</h2>
               <p className="text-white/35 text-sm mb-12">
