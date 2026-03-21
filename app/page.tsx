@@ -19,7 +19,7 @@ function ParticleCanvas() {
       x: number; y: number; baseVx: number; baseVy: number; vx: number; vy: number; radius: number
       constructor(w: number, h: number) {
         this.x = Math.random() * w; this.y = Math.random() * h
-        this.baseVx = (Math.random() - 0.5) * 0.08; this.baseVy = (Math.random() - 0.5) * 0.08
+        this.baseVx = (Math.random() - 0.5) * 0.18; this.baseVy = (Math.random() - 0.5) * 0.18
         this.vx = this.baseVx; this.vy = this.baseVy
         this.radius = Math.random() * 0.5 + 1
       }

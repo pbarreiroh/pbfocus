@@ -126,10 +126,10 @@ export default function Chat() {
             <div className="w-full max-w-xl space-y-10 text-center">
               <div className="space-y-3">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-white/30">pbfocus IA</div>
-                <h1 className="font-serif italic text-4xl md:text-5xl text-white">
+                <h1 className="font-serif italic text-5xl md:text-6xl text-white">
                   Hola, ¿cómo te llamas?
                 </h1>
-                <p className="text-white/40 text-sm leading-relaxed">
+                <p className="text-white/40 text-base leading-relaxed">
                   Voy a hacerte unas preguntas para crear tu planning semanal personalizado.
                 </p>
               </div>
@@ -140,7 +140,7 @@ export default function Chat() {
                   value={inputVal}
                   onChange={e => setInputVal(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && inputVal.trim()) { startOnboarding(inputVal.trim()); setInputVal('') } }}
-                  className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm"
+                  className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/[0.30] transition-colors text-sm"
                   autoFocus
                 />
                 <button
@@ -329,12 +329,12 @@ export default function Chat() {
                   value={inputVal}
                   onChange={e => setInputVal(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter' && !loading) sendMessage() }}
-                  className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-sm"
+                  className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.30] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/[0.55] transition-colors text-sm"
                 />
                 <button
                   onClick={() => sendMessage()}
                   disabled={loading || !inputVal.trim()}
-                  className="bg-white text-[#080808] px-5 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30"
+                  className="bg-white text-[#080808] px-7 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30"
                 >
                   →
                 </button>

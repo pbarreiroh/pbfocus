@@ -7,12 +7,16 @@
   --foreground: #e8e8e8;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   background: #080808;
   color: #e8e8e8;
   font-family: sans-serif;
   scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 
 * {

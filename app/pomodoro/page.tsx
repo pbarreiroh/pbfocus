@@ -90,7 +90,7 @@ function ParticleCanvas() {
 
 export default function Pomodoro() {
   const router = useRouter()
-  const [customFocus, setCustomFocus] = useState(25)
+  const [customFocus, setCustomFocus] = useState(50)
   const [customShort, setCustomShort] = useState(5)
   const [customLong, setCustomLong] = useState(15)
   const [editing, setEditing] = useState(false)
@@ -102,7 +102,7 @@ export default function Pomodoro() {
   }
 
   const [mode, setMode] = useState<Mode>('focus')
-  const [seconds, setSeconds] = useState(25 * 60)
+  const [seconds, setSeconds] = useState(50 * 60)
   const [running, setRunning] = useState(false)
   const [session, setSession] = useState(1)
   const [tasks, setTasks] = useState<{ id: number; text: string; done: boolean }[]>([])
@@ -110,9 +110,11 @@ export default function Pomodoro() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    setSeconds(MODES[mode].minutes * 60)
     setRunning(false)
-  }, [mode])
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    const mins = mode === 'focus' ? customFocus : mode === 'short' ? customShort : customLong
+    setSeconds(mins * 60)
+  }, [mode, customFocus, customShort, customLong])
 
   useEffect(() => {
     if (running) {
@@ -128,10 +130,10 @@ export default function Pomodoro() {
         })
       }, 1000)
     } else {
-      clearInterval(intervalRef.current!)
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
-    return () => clearInterval(intervalRef.current!)
-  }, [running, mode])
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [running])
 
   const reset = () => {
     setRunning(false)

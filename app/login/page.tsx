@@ -127,55 +127,55 @@ export default function Login() {
         @keyframes title-pulse { 0%,100%{font-weight:300;letter-spacing:-0.5px} 50%{font-weight:500;letter-spacing:1px} }
       `}</style>
 
-      <div className="w-full max-w-sm space-y-8 z-10">
+      <div className="w-full max-w-md space-y-8 z-10">
         <div className="space-y-2 text-center">
-          <p className="text-white/60 text-sm font-mono uppercase tracking-widest">
+          <p className="text-white/80 text-base font-mono uppercase tracking-widest">
             {mode === 'login' ? 'Inicia sesión' : 'Crea tu cuenta'}
           </p>
         </div>
 
-        <div className="border border-white/[0.18] rounded-2xl p-8 bg-white/[0.04] space-y-5">
+        <div className="border border-white/[0.30] rounded-2xl p-10 bg-white/[0.04] space-y-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div className="space-y-1.5">
-                <label className="font-mono text-[9px] uppercase tracking-widest text-white/65">Nombre</label>
+                <label className="font-mono text-xs uppercase tracking-widest text-white/80">Nombre</label>
                 <input
                   type="text"
                   value={nombre}
                   onChange={e => setNombre(e.target.value)}
                   required
                   placeholder="Tu nombre"
-                  className="w-full px-4 py-3 bg-white/[0.06] border border-white/[0.15] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-sm"
+                  className="w-full px-4 py-4 bg-white/[0.06] border border-white/[0.25] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-base"
                 />
               </div>
             )}
             <div className="space-y-1.5">
-              <label className="font-mono text-[9px] uppercase tracking-widest text-white/65">Email</label>
+              <label className="font-mono text-xs uppercase tracking-widest text-white/80">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
                 placeholder="tu@email.com"
-                className="w-full px-4 py-3 bg-white/[0.06] border border-white/[0.15] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-sm"
+                className="w-full px-4 py-4 bg-white/[0.06] border border-white/[0.25] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-base"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="font-mono text-[9px] uppercase tracking-widest text-white/65">Contraseña</label>
+              <label className="font-mono text-xs uppercase tracking-widest text-white/80">Contraseña</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-white/[0.06] border border-white/[0.15] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-sm"
+                className="w-full px-4 py-4 bg-white/[0.06] border border-white/[0.25] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors text-base"
               />
             </div>
             {error && <p className="text-red-400/80 text-xs font-mono">{error}</p>}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white text-[#080808] font-medium py-3 text-xs tracking-wide rounded-xl hover:bg-white/90 transition-colors disabled:opacity-40 mt-2"
+              className="w-full bg-white text-[#080808] font-medium py-4 text-sm tracking-wide rounded-xl hover:bg-white/90 transition-colors disabled:opacity-40 mt-2"
             >
               {loading ? '...' : mode === 'login' ? 'Entrar →' : 'Crear cuenta →'}
             </button>
@@ -184,7 +184,7 @@ export default function Login() {
           <div className="border-t border-white/[0.12] pt-4 text-center">
             <button
               onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}
-              className="text-white/50 text-sm font-mono hover:text-white/70 transition-colors"
+              className="text-white/65 text-sm font-mono hover:text-white/80 transition-colors"
             >
               {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
             </button>
