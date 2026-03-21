@@ -84,7 +84,7 @@ function ParticleCanvas() {
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-90" style={{zIndex:0}} />
+  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-90" style={{ zIndex: 0 }} />
 }
 
 export default function Home() {
@@ -131,7 +131,7 @@ export default function Home() {
 
         {/* 4 Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
-          <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
+          <div onClick={() => router.push('/diagnostico')} className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
             <div className="text-white/40 text-sm">◎</div>
             <div className="text-white/75 text-sm font-medium">Diagnóstico rápido</div>
             <div className="text-white/32 text-xs leading-relaxed">Descubre cuánto tiempo pierdes con el móvil y cómo recuperarlo.</div>
