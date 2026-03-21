@@ -175,11 +175,10 @@ export default function Pomodoro() {
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`px-4 py-1.5 rounded-full font-mono text-[9px] uppercase tracking-widest border transition-all ${
-                  mode === m
+                className={`px-4 py-1.5 rounded-full font-mono text-[9px] uppercase tracking-widest border transition-all ${mode === m
                     ? 'border-white/30 text-white/90 bg-white/[0.06]'
                     : 'border-white/[0.15] text-white/50 hover:border-white/30'
-                }`}
+                  }`}
               >
                 {MODES[m].label}
               </button>
@@ -189,7 +188,7 @@ export default function Pomodoro() {
           {/* Círculo de progreso */}
           <div className="relative w-64 h-64 flex items-center justify-center">
             <svg className="absolute top-0 left-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="2"/>
+              <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="2" />
               <circle
                 cx="50" cy="50" r="46" fill="none"
                 stroke="rgba(255,255,255,0.9)" strokeWidth="2"
@@ -266,15 +265,13 @@ export default function Pomodoro() {
             {tasks.map(task => (
               <div key={task.id} className="flex items-center gap-3 px-4 py-3 border border-white/[0.08] rounded-xl bg-white/[0.01] group transition-all">
                 <button onClick={() => toggleTask(task.id)} className="shrink-0">
-                  <div className={`w-4 h-4 rounded border transition-all flex items-center justify-center ${
-                    task.done ? 'bg-transparent border-green-400/60' : 'border-white/20 hover:border-white/40'
-                  }`}>
+                  <div className={`w-4 h-4 rounded border transition-all flex items-center justify-center ${task.done ? 'bg-transparent border-green-400/60' : 'border-white/20 hover:border-white/40'
+                    }`}>
                     {task.done && <span className="text-green-400 text-[10px]">✓</span>}
                   </div>
                 </button>
-                <span className={`flex-1 text-sm transition-all ${
-                  task.done ? 'text-white/25 line-through decoration-white/30' : 'text-white/80'
-                }`}>
+                <span className={`flex-1 text-sm transition-all ${task.done ? 'text-white/25 line-through decoration-white/30' : 'text-white/80'
+                  }`}>
                   {task.text}
                 </span>
                 <button onClick={() => removeTask(task.id)} className="text-white/15 hover:text-white/40 transition-colors opacity-0 group-hover:opacity-100 text-xs">

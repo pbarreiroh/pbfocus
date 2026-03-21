@@ -84,7 +84,7 @@ function ParticleCanvas() {
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-90" />
+  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-90" style={{zIndex:0}} />
 }
 
 export default function Home() {
@@ -99,9 +99,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative overflow-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ParticleCanvas />
-      </div>
-
-      {/* Main — todo centrado en pantalla */}
+      </div>      {/* Main — todo centrado en pantalla */}
       <main className="flex-1 flex flex-col items-center justify-center min-h-screen px-8 gap-10 z-10 pt-16">
 
         {/* Hero IA */}

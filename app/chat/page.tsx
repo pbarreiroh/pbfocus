@@ -36,7 +36,7 @@ export default function Chat() {
   const [sleepH, setSleepH] = useState('')
   const [studyH, setStudyH] = useState('')
   const [sportDays, setSportDays] = useState<number[]>([])
-  const [habitInputs, setHabitInputs] = useState(['','',''])
+  const [habitInputs, setHabitInputs] = useState(['', '', ''])
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -106,7 +106,7 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans">
-      
+
       {phase === 'onboarding' && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40">
           <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ export default function Chat() {
                   autoFocus
                 />
                 <button
-                  onClick={() => { if (inputVal.trim()) { startOnboarding(inputVal.trim()); setInputVal('') }}}
+                  onClick={() => { if (inputVal.trim()) { startOnboarding(inputVal.trim()); setInputVal('') } }}
                   className="bg-white text-[#080808] px-5 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors"
                 >
                   →
@@ -171,7 +171,7 @@ export default function Chat() {
                   <div className="space-y-2">
                     <div className="font-mono text-[10px] text-white/40 uppercase tracking-wider">A qué hora te levantas</div>
                     <div className="flex gap-3">
-                      <input type="number" min="4" max="12" placeholder="7" 
+                      <input type="number" min="4" max="12" placeholder="7"
                         value={wakeH} onChange={e => setWakeH(e.target.value)}
                         className="w-24 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white text-center text-lg focus:outline-none focus:border-white/25 transition-colors" />
                       <span className="text-white/30 flex items-center font-mono text-sm">h</span>
@@ -187,7 +187,7 @@ export default function Chat() {
                       <span className="text-white/30 flex items-center font-mono text-sm">h</span>
                     </div>
                   </div>
-                  <button onClick={() => { if(wakeH && sleepH) { handleAnswer(`Me levanto a las ${wakeH}h y me acuesto a las ${sleepH}h`) }}}
+                  <button onClick={() => { if (wakeH && sleepH) { handleAnswer(`Me levanto a las ${wakeH}h y me acuesto a las ${sleepH}h`) } }}
                     disabled={!wakeH || !sleepH}
                     className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
                     Continuar →
@@ -201,7 +201,7 @@ export default function Chat() {
                       className="w-24 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white text-center text-lg focus:outline-none focus:border-white/25 transition-colors" />
                     <span className="text-white/40 text-sm font-mono">horas al día</span>
                   </div>
-                  <button onClick={() => { if(studyH) { handleAnswer(`Dedico ${studyH} horas al día`) }}}
+                  <button onClick={() => { if (studyH) { handleAnswer(`Dedico ${studyH} horas al día`) } }}
                     disabled={!studyH}
                     className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
                     Continuar →
@@ -210,14 +210,14 @@ export default function Chat() {
               ) : currentQ === 2 ? (
                 <div className="space-y-4">
                   <div className="flex gap-2">
-                    {['L','M','X','J','V','S','D'].map((dia, i) => (
+                    {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((dia, i) => (
                       <button key={i} onClick={() => setSportDays(prev => prev.includes(i) ? prev.filter(d => d !== i) : [...prev, i])}
                         className={`w-10 h-10 rounded-lg border text-xs font-mono transition-all ${sportDays.includes(i) ? 'border-white/40 bg-white/10 text-white' : 'border-white/[0.10] text-white/30 hover:border-white/20'}`}>
                         {dia}
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => { const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']; const sel = sportDays.length === 0 ? 'No hago deporte' : `Hago deporte los ${sportDays.map(i => dias[i]).join(', ')}`; handleAnswer(sel) }}
+                  <button onClick={() => { const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']; const sel = sportDays.length === 0 ? 'No hago deporte' : `Hago deporte los ${sportDays.map(i => dias[i]).join(', ')}`; handleAnswer(sel) }}
                     className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors">
                     Continuar →
                   </button>
@@ -226,10 +226,10 @@ export default function Chat() {
                 <div className="space-y-3">
                   {['Hábito 1', 'Hábito 2', 'Hábito 3'].map((ph, i) => (
                     <input key={i} type="text" placeholder={ph}
-                      value={habitInputs[i]} onChange={e => setHabitInputs(prev => { const n=[...prev]; n[i]=e.target.value; return n })}
+                      value={habitInputs[i]} onChange={e => setHabitInputs(prev => { const n = [...prev]; n[i] = e.target.value; return n })}
                       className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm" />
                   ))}
-                  <button onClick={() => { const h = habitInputs.filter(Boolean); if(h.length) { handleAnswer(`Quiero mejorar: ${h.join(', ')}`) }}}
+                  <button onClick={() => { const h = habitInputs.filter(Boolean); if (h.length) { handleAnswer(`Quiero mejorar: ${h.join(', ')}`) } }}
                     disabled={!habitInputs.some(Boolean)}
                     className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
                     Continuar →
@@ -270,7 +270,7 @@ export default function Chat() {
         {/* CHAT */}
         {phase === 'chat' && (
           <div className="flex-1 flex flex-col">
-            
+
             {/* Mensajes */}
             <div className="flex-1 overflow-y-auto px-6 py-8 space-y-6 max-w-2xl w-full mx-auto">
               {messages.filter(m => m.role === 'assistant' || (m.role === 'user' && !m.content.startsWith('Aquí está mi situación'))).map((msg, i) => (
@@ -280,11 +280,10 @@ export default function Chat() {
                       <span className="font-mono text-[8px] text-white/60">pb</span>
                     </div>
                   )}
-                  <div className={`max-w-lg text-sm leading-relaxed whitespace-pre-wrap ${
-                    msg.role === 'user'
+                  <div className={`max-w-lg text-sm leading-relaxed whitespace-pre-wrap ${msg.role === 'user'
                       ? 'bg-white/[0.06] border border-white/[0.10] rounded-2xl rounded-tr-sm px-4 py-3 text-white/80'
                       : 'text-white/75'
-                  }`}>
+                    }`}>
                     {msg.content}
                   </div>
                 </div>
@@ -295,9 +294,9 @@ export default function Chat() {
                     <span className="font-mono text-[8px] text-white/60">pb</span>
                   </div>
                   <div className="flex gap-1 items-center pt-2">
-                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{animationDelay:'0ms'}}/>
-                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{animationDelay:'150ms'}}/>
-                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{animationDelay:'300ms'}}/>
+                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               )}
@@ -306,7 +305,7 @@ export default function Chat() {
 
             {/* Input area */}
             <div className="px-6 pb-8 max-w-2xl w-full mx-auto space-y-3">
-              
+
               {/* Acciones rápidas */}
               <div className="flex gap-2 flex-wrap">
                 {ACTIONS.map(action => (
