@@ -107,23 +107,16 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans">
       
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-[rgba(8,8,8,0.9)] backdrop-blur border-b border-white/[0.05] flex items-center justify-between">
-        <button
-          onClick={() => router.push('/')}
-          className="font-mono text-white/50 text-sm tracking-wider hover:text-white transition-colors"
-        >
-          ← pbfocus
-        </button>
-        {phase === 'onboarding' && (
+      {phase === 'onboarding' && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40">
           <div className="flex items-center gap-3">
             <div className="w-32 bg-white/[0.06] h-px rounded-full">
               <div className="bg-white/40 h-px rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
             </div>
             <span className="font-mono text-[9px] text-white/30">{currentQ}/{QUESTIONS.length}</span>
           </div>
-        )}
-      </nav>
+        </div>
+      )}
 
       <main className="flex-1 flex flex-col pt-16">
 

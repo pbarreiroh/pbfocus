@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import GlobalNav from './components/GlobalNav'
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -40,7 +41,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} antialiased`}
       >
-        {children}
+        <GlobalNav />
+        <div className="pt-[57px]">{children}</div>
       </body>
     </html>
   );

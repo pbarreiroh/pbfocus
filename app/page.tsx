@@ -101,52 +101,6 @@ export default function Home() {
         <ParticleCanvas />
       </div>
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-4 bg-[rgba(8,8,8,0.85)] backdrop-blur border-b border-white/[0.05] flex items-center justify-between">
-        <style>{`
-          @keyframes title-sweep { 0%,35%{background-position:160% center} 65%,100%{background-position:-60% center} }
-          @keyframes title-pulse { 0%,100%{font-weight:300;letter-spacing:-0.5px} 50%{font-weight:500;letter-spacing:1px} }
-        `}</style>
-        <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: 'italic',
-          fontSize: '22px',
-          display: 'inline-block',
-          background: 'linear-gradient(105deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 25%, rgba(255,255,255,1) 38%, rgba(255,255,255,1) 45%, rgba(255,255,255,0.4) 55%, rgba(255,255,255,0.4) 100%)',
-          backgroundSize: '400% 100%',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          animation: 'title-sweep 9s ease-in-out infinite, title-pulse 6s ease-in-out infinite',
-        }}>pbfocus</span>
-        <div className="hidden md:flex items-center gap-8">
-          <button onClick={() => router.push('/chat')} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">IA</button>
-          <button onClick={() => {}} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">Diagnóstico</button>
-          <button onClick={() => {}} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">Artículos</button>
-          <button onClick={() => {}} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">Pomodoro</button>
-        </div>
-        {user ? (
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-[9px] text-white/40 uppercase tracking-widest">
-              Mi cuenta
-            </span>
-            <button
-              onClick={async () => { await supabase.auth.signOut(); setUser(null) }}
-              className="font-mono text-[9px] uppercase tracking-widest text-white/40 hover:text-white transition-colors"
-            >
-              Salir
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => router.push('/login')}
-            className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors"
-          >
-            Iniciar sesión →
-          </button>
-        )}
-      </nav>
-
       {/* Main — todo centrado en pantalla */}
       <main className="flex-1 flex flex-col items-center justify-center min-h-screen px-8 gap-10 z-10 pt-16">
 
