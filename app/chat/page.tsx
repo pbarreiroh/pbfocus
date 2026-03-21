@@ -32,6 +32,11 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [nombre, setNombre] = useState('')
+  const [wakeH, setWakeH] = useState('')
+  const [sleepH, setSleepH] = useState('')
+  const [studyH, setStudyH] = useState('')
+  const [sportDays, setSportDays] = useState<number[]>([])
+  const [habitInputs, setHabitInputs] = useState(['','',''])
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -48,9 +53,10 @@ export default function Chat() {
     setPhase('onboarding')
   }
 
-  const handleAnswer = async () => {
-    if (!inputVal.trim()) return
-    const answer = inputVal.trim()
+  const handleAnswer = async (override?: any) => {
+    const value = typeof override === 'string' ? override : inputVal
+    if (!value.trim()) return
+    const answer = value.trim()
     setInputVal('')
     const q = QUESTIONS[currentQ]
     const newAnswers = { ...answers, [q.id]: answer }
@@ -140,7 +146,7 @@ export default function Chat() {
                   placeholder="Tu nombre..."
                   value={inputVal}
                   onChange={e => setInputVal(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter' && inputVal.trim()) startOnboarding(inputVal.trim()); setInputVal('') }}
+                  onKeyDown={e => { if (e.key === 'Enter' && inputVal.trim()) { startOnboarding(inputVal.trim()); setInputVal('') } }}
                   className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm"
                   autoFocus
                 />
@@ -167,24 +173,95 @@ export default function Chat() {
                   {QUESTIONS[currentQ].question}
                 </h2>
               </div>
-              <div className="flex gap-3">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="Tu respuesta..."
-                  value={inputVal}
-                  onChange={e => setInputVal(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') handleAnswer() }}
-                  className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm"
-                />
-                <button
-                  onClick={handleAnswer}
-                  disabled={!inputVal.trim()}
-                  className="bg-white text-[#080808] px-5 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30"
-                >
-                  →
-                </button>
-              </div>
+              {currentQ === 0 ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="font-mono text-[10px] text-white/40 uppercase tracking-wider">A qué hora te levantas</div>
+                    <div className="flex gap-3">
+                      <input type="number" min="4" max="12" placeholder="7" 
+                        value={wakeH} onChange={e => setWakeH(e.target.value)}
+                        className="w-24 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white text-center text-lg focus:outline-none focus:border-white/25 transition-colors" />
+                      <span className="text-white/30 flex items-center font-mono text-sm">h</span>
+                    </div>
+                  </div>
+                  <div className="w-full border-t border-white/[0.06]" />
+                  <div className="space-y-2">
+                    <div className="font-mono text-[10px] text-white/40 uppercase tracking-wider">A qué hora te acuestas</div>
+                    <div className="flex gap-3">
+                      <input type="number" min="20" max="4" placeholder="23"
+                        value={sleepH} onChange={e => setSleepH(e.target.value)}
+                        className="w-24 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white text-center text-lg focus:outline-none focus:border-white/25 transition-colors" />
+                      <span className="text-white/30 flex items-center font-mono text-sm">h</span>
+                    </div>
+                  </div>
+                  <button onClick={() => { if(wakeH && sleepH) { handleAnswer(`Me levanto a las ${wakeH}h y me acuesto a las ${sleepH}h`) }}}
+                    disabled={!wakeH || !sleepH}
+                    className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
+                    Continuar →
+                  </button>
+                </div>
+              ) : currentQ === 1 ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <input type="number" min="0" max="16" placeholder="6"
+                      value={studyH} onChange={e => setStudyH(e.target.value)}
+                      className="w-24 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white text-center text-lg focus:outline-none focus:border-white/25 transition-colors" />
+                    <span className="text-white/40 text-sm font-mono">horas al día</span>
+                  </div>
+                  <button onClick={() => { if(studyH) { handleAnswer(`Dedico ${studyH} horas al día`) }}}
+                    disabled={!studyH}
+                    className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
+                    Continuar →
+                  </button>
+                </div>
+              ) : currentQ === 2 ? (
+                <div className="space-y-4">
+                  <div className="flex gap-2">
+                    {['L','M','X','J','V','S','D'].map((dia, i) => (
+                      <button key={i} onClick={() => setSportDays(prev => prev.includes(i) ? prev.filter(d => d !== i) : [...prev, i])}
+                        className={`w-10 h-10 rounded-lg border text-xs font-mono transition-all ${sportDays.includes(i) ? 'border-white/40 bg-white/10 text-white' : 'border-white/[0.10] text-white/30 hover:border-white/20'}`}>
+                        {dia}
+                      </button>
+                    ))}
+                  </div>
+                  <button onClick={() => { const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']; const sel = sportDays.length === 0 ? 'No hago deporte' : `Hago deporte los ${sportDays.map(i => dias[i]).join(', ')}`; handleAnswer(sel) }}
+                    className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors">
+                    Continuar →
+                  </button>
+                </div>
+              ) : currentQ === 4 ? (
+                <div className="space-y-3">
+                  {['Hábito 1', 'Hábito 2', 'Hábito 3'].map((ph, i) => (
+                    <input key={i} type="text" placeholder={ph}
+                      value={habitInputs[i]} onChange={e => setHabitInputs(prev => { const n=[...prev]; n[i]=e.target.value; return n })}
+                      className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm" />
+                  ))}
+                  <button onClick={() => { const h = habitInputs.filter(Boolean); if(h.length) { handleAnswer(`Quiero mejorar: ${h.join(', ')}`) }}}
+                    disabled={!habitInputs.some(Boolean)}
+                    className="bg-white text-[#080808] px-6 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30">
+                    Continuar →
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-3">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder="Tu respuesta..."
+                    value={inputVal}
+                    onChange={e => setInputVal(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleAnswer() }}
+                    className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.10] rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-white/25 transition-colors text-sm"
+                  />
+                  <button
+                    onClick={handleAnswer}
+                    disabled={!inputVal.trim()}
+                    className="bg-white text-[#080808] px-5 py-3 rounded-xl text-sm font-medium hover:bg-white/90 transition-colors disabled:opacity-30"
+                  >
+                    →
+                  </button>
+                </div>
+              )}
               {currentQ > 0 && (
                 <button
                   onClick={() => setCurrentQ(prev => prev - 1)}
@@ -243,9 +320,9 @@ export default function Chat() {
                   <button
                     key={action.id}
                     onClick={() => sendMessage(action.label)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-white/[0.10] rounded-full text-[10px] font-mono text-white/45 hover:text-white/70 hover:border-white/20 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 border border-white/40 rounded-full text-xs font-mono text-white/80 hover:text-white hover:border-white/70 hover:bg-white/[0.05] transition-all"
                   >
-                    <span className="text-white/30 text-xs">{action.icon}</span>
+                    <span className="text-white/60 text-sm">{action.icon}</span>
                     {action.label}
                   </button>
                 ))}

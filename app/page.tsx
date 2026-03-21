@@ -297,29 +297,29 @@ export default function Home() {
             <section className="min-h-screen flex items-center reveal">
               <div className="w-full px-12 md:px-20 pt-28 pb-20">
                 <style>{`
-                  @keyframes title-float {
-                    0%, 100% { transform: translateY(0px) skewX(0deg); }
-                    25% { transform: translateY(-6px) skewX(-0.5deg); }
-                    75% { transform: translateY(3px) skewX(0.3deg); }
+                  @keyframes title-sweep {
+                    0%, 35% { background-position: 160% center; }
+                    65%, 100% { background-position: -60% center; }
                   }
-                  @keyframes sweep {
-                    0%   { background-position: 160% center; }
-                    35%  { background-position: 160% center; }
-                    65%  { background-position: -60% center; }
-                    100% { background-position: -60% center; }
+                  @keyframes title-pulse {
+                    0%, 100% { font-weight: 300; letter-spacing: -1px; }
+                    50% { font-weight: 500; letter-spacing: 2px; }
                   }
                 `}</style>
                 <h1
-                  className="font-serif italic leading-none"
                   style={{
-                    fontSize: 'clamp(80px, 12vw, 160px)',
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(52px, 8vw, 96px)',
                     display: 'inline-block',
-                    animation: 'title-float 6s ease-in-out infinite, sweep 10s ease-in-out infinite',
-                    background: 'linear-gradient(105deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 25%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,1) 42%, rgba(255,255,255,0.95) 49%, rgba(255,255,255,0.4) 59%, rgba(255,255,255,0.4) 100%)',
+                    background: 'linear-gradient(105deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.35) 20%, rgba(255,255,255,0.95) 35%, rgba(255,255,255,1) 42%, rgba(255,255,255,0.95) 49%, rgba(255,255,255,0.35) 62%, rgba(255,255,255,0.35) 100%)',
                     backgroundSize: '400% 100%',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
+                    animation: 'title-sweep 9s ease-in-out infinite, title-pulse 6s ease-in-out infinite',
+                    lineHeight: 1,
+                    marginBottom: '16px',
                   }}
                 >
                   pbfocus
@@ -341,8 +341,12 @@ export default function Home() {
                     Te dejo que explores esta web y que te esfuerces en ser mañana un poquito mejor que hoy.
                   </span>
                 </p>
-                <div className="font-mono text-[9px] text-white/18 uppercase tracking-widest mt-20 animate-bounce">
-                  scroll ↓
+                <div className="flex flex-col items-center gap-2 mt-16">
+                  <span className="font-mono text-[8px] uppercase tracking-widest text-white/30">scroll</span>
+                  <div className="relative w-px h-10 bg-white/10 overflow-hidden rounded-full">
+                    <div className="absolute top-0 left-0 w-full bg-white/70 rounded-full"
+                      style={{ height: '100%', animation: 'scroll-drop 2s ease-in-out infinite' }} />
+                  </div>
                 </div>
               </div>
             </section>

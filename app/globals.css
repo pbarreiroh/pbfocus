@@ -45,3 +45,11 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+.font-cormorant { font-family: 'Cormorant Garamond', var(--font-cormorant), serif; }
+
+@keyframes scroll-drop {
+  0%   { transform: translateY(-100%); }
+  50%  { transform: translateY(100%); }
+  100% { transform: translateY(100%); }
+}

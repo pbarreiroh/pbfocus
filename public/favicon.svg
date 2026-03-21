@@ -1,0 +1,21 @@
+<svg width="110" height="110" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+  <rect width="110" height="110" rx="22" fill="#080808"/>
+  <circle cx="55" cy="55" r="52" fill="none" stroke="white" stroke-width="2"/>
+  <circle cx="55" cy="55" r="40" fill="none" stroke="white" stroke-width="1.5"/>
+  <g transform="rotate(30, 55, 55)">
+    <line x1="55" y1="15" x2="55" y2="95" stroke="white" stroke-width="1.2"/>
+    <line x1="15" y1="55" x2="95" y2="55" stroke="white" stroke-width="1.2"/>
+    <polygon points="55,18 59,50 55,54 51,50" fill="white"/>
+    <polygon points="55,92 59,60 55,56 51,60" fill="white"/>
+    <polygon points="18,55 50,51 54,55 50,59" fill="white"/>
+    <polygon points="92,55 60,51 56,55 60,59" fill="white"/>
+  </g>
+  <path id="topArc" d="M 15,55 A 40,40 0 0,1 95,55" fill="none"/>
+  <text font-family="monospace" font-size="7.5" fill="white" letter-spacing="3">
+    <textPath href="#topArc" startOffset="8%">PBFOCUS</textPath>
+  </text>
+  <path id="botArc" d="M 95,55 A 40,40 0 0,1 15,55" fill="none"/>
+  <text font-family="monospace" font-size="7.5" fill="white" letter-spacing="3">
+    <textPath href="#botArc" startOffset="8%">PBFOCUS</textPath>
+  </text>
+</svg>
