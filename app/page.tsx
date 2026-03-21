@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
 function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -88,6 +89,11 @@ function ParticleCanvas() {
 
 export default function Home() {
   const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative overflow-hidden">
@@ -119,9 +125,26 @@ export default function Home() {
           <button onClick={() => {}} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">Artículos</button>
           <button onClick={() => {}} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">Pomodoro</button>
         </div>
-        <button onClick={() => router.push('/chat')} className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors">
-          Empezar →
-        </button>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[9px] text-white/40 uppercase tracking-widest">
+              Mi cuenta
+            </span>
+            <button
+              onClick={async () => { await supabase.auth.signOut(); setUser(null) }}
+              className="font-mono text-[9px] uppercase tracking-widest text-white/40 hover:text-white transition-colors"
+            >
+              Salir
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => router.push('/login')}
+            className="font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white transition-colors"
+          >
+            Iniciar sesión →
+          </button>
+        )}
       </nav>
 
       {/* Main — todo centrado en pantalla */}
@@ -147,32 +170,38 @@ export default function Home() {
             8 preguntas · planning 7 días · 3 hábitos clave
           </div>
           <button
-            onClick={() => router.push('/chat')}
+            onClick={() => user ? router.push('/chat') : router.push('/login')}
             className="mt-2 bg-white text-[#080808] font-medium px-10 py-3 text-xs tracking-wide rounded-md hover:bg-white/90 transition-colors"
           >
             Crear mi planning →
           </button>
         </div>
 
-        {/* 3 Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-2xl">
+        {/* 4 Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
           <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
             <div className="text-white/40 text-sm">◎</div>
             <div className="text-white/75 text-sm font-medium">Diagnóstico rápido</div>
             <div className="text-white/32 text-xs leading-relaxed">Descubre cuánto tiempo pierdes con el móvil y cómo recuperarlo.</div>
             <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">test interactivo</div>
           </div>
-          <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
+          <div onClick={() => router.push('/pomodoro')} className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
             <div className="text-white/40 text-sm">◷</div>
             <div className="text-white/75 text-sm font-medium">Pomodoro</div>
             <div className="text-white/32 text-xs leading-relaxed">Temporizador de estudio con bloques de foco y descanso.</div>
-            <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">próximamente</div>
+            <div className="font-mono text-[8px] uppercase tracking-wider text-white/50 mt-1">ir a pomodoro →</div>
           </div>
           <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
             <div className="text-white/40 text-sm">✦</div>
             <div className="text-white/75 text-sm font-medium">Artículos</div>
             <div className="text-white/32 text-xs leading-relaxed">Reflexiones sobre hábitos, energía y desarrollo personal.</div>
             <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">próximamente</div>
+          </div>
+          <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
+            <div className="text-white/40 text-sm">✎</div>
+            <div className="text-white/75 text-sm font-medium">Por qué lo hice</div>
+            <div className="text-white/32 text-xs leading-relaxed">La historia detrás de pbfocus y por qué creo en esto.</div>
+            <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">sobre pbfocus</div>
           </div>
         </div>
 
