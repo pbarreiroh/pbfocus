@@ -111,29 +111,29 @@ export default function Pomodoro() {
 
   useEffect(() => {
     setRunning(false)
-    if (intervalRef.current) clearInterval(intervalRef.current)
     const mins = mode === 'focus' ? customFocus : mode === 'short' ? customShort : customLong
     setSeconds(mins * 60)
   }, [mode, customFocus, customShort, customLong])
 
   useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => {
-        setSeconds(prev => {
-          if (prev <= 1) {
-            clearInterval(intervalRef.current!)
-            setRunning(false)
-            if (mode === 'focus') setSession(s => s + 1)
-            return 0
-          }
-          return prev - 1
-        })
-      }, 1000)
-    } else {
+    if (!running) {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      return
+    }
+    intervalRef.current = setInterval(() => {
+      setSeconds(prev => {
+        if (prev <= 1) {
+          setRunning(false)
+          if (mode === 'focus') setSession(s => s + 1)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [running])
+  }, [running, mode])
 
   const reset = () => {
     setRunning(false)
