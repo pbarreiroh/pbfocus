@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
@@ -42,8 +42,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} antialiased`}
       >
         <GlobalNav />
-        <div className="pt-[57px]">{children}</div>
+        <div>{children}</div>
       </body>
     </html>
   );
 }
+
