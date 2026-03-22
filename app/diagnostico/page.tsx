@@ -138,38 +138,74 @@ export default function Diagnostico() {
 
       {panel && (
         <div className="fixed inset-0 bg-[#080808] z-50 overflow-y-auto">
-          <div className="max-w-2xl mx-auto px-8 py-12 space-y-8">
-            <div className="flex items-start justify-between gap-6">
-              <h2 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'clamp(24px,3vw,36px)', color:'white', lineHeight:1.15, flex:1}}>
-                {(panel as any).micro || panel.title}
-              </h2>
+          <div className="max-w-3xl mx-auto px-6 md:px-12 py-10 space-y-8">
+
+            {/* Header con X bien separada */}
+            <div className="flex items-center justify-between">
+              <div className="font-mono text-[9px] uppercase tracking-widest text-white/30">
+                solución
+              </div>
               <button
                 onClick={() => setPanel(null)}
-                className="border border-white/[0.12] text-white/40 hover:text-white hover:border-white/30 w-9 h-9 rounded-lg flex items-center justify-center font-mono text-sm transition-colors shrink-0 mt-1"
+                className="border border-white/[0.20] text-white/50 hover:text-white hover:border-white/50 w-10 h-10 rounded-lg flex items-center justify-center font-mono text-base transition-colors"
               >
                 ✕
               </button>
             </div>
 
+            {/* Título simple */}
+            <h2 style={{
+              fontFamily:"'Cormorant Garamond', serif",
+              fontStyle:'italic',
+              fontSize:'clamp(20px,2.5vw,28px)',
+              color:'rgba(255,255,255,0.6)',
+              lineHeight:1.2,
+              fontWeight:300,
+            }}>
+              {panel.title}
+            </h2>
+
+            {/* Texto intro — grande y llamativo */}
+            <p style={{
+              fontFamily:"'Cormorant Garamond', serif",
+              fontStyle:'italic',
+              fontSize:'clamp(22px,3.5vw,40px)',
+              color:'white',
+              lineHeight:1.25,
+              letterSpacing:'-0.3px',
+            }}>
+              {(panel as any).micro}
+            </p>
+
+            {/* Guía detallada — solo si hay pasos */}
             {panel.steps && panel.steps.length > 0 && (
-              <div className="border border-white/[0.08] rounded-xl p-6 bg-white/[0.02] space-y-5">
-                <div className="font-mono text-[9px] uppercase tracking-widest text-white/35">{panel.title}</div>
-                <div className="space-y-4">
+              <div className="border border-white/[0.25] rounded-2xl p-6 md:p-8 bg-white/[0.02] space-y-6">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-white/40">
+                  guía paso a paso
+                </div>
+                <div className="space-y-5">
                   {panel.steps.map((step, i) => (
-                    <div key={i} className="flex gap-4">
-                      <span className="font-mono text-[9px] text-white/22 shrink-0 pt-0.5">{String(i+1).padStart(2,'0')}</span>
-                      <span className="text-white/58 text-sm leading-relaxed">{step}</span>
+                    <div key={i} className="flex gap-5">
+                      <span className="font-mono text-[10px] text-white/25 shrink-0 pt-1 min-w-[20px]">
+                        {String(i+1).padStart(2,'0')}
+                      </span>
+                      <span className="text-white/65 text-base leading-relaxed">{step}</span>
                     </div>
                   ))}
                 </div>
                 {panel.cta && (
-                  <a href={panel.cta.href} target="_blank" rel="noreferrer"
-                    className="inline-block border border-white/[0.12] text-white/45 hover:text-white hover:border-white/25 px-5 py-2.5 rounded text-xs font-mono transition-colors mt-2">
+                  <a
+                    href={panel.cta.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block border border-white/[0.25] text-white/60 hover:text-white hover:border-white/50 px-6 py-3 rounded-lg text-xs font-mono transition-colors mt-2"
+                  >
                     {panel.cta.text}
                   </a>
                 )}
               </div>
             )}
+
           </div>
         </div>
       )}

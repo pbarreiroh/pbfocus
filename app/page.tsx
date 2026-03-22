@@ -96,13 +96,13 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative" style={{ height: '100dvh', overflow: 'hidden' }}>
+    <div className="bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative min-h-screen md:h-screen md:overflow-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ParticleCanvas />
       </div>
-      <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-20 md:pt-16">
 
-        <div className="flex flex-col items-center text-center gap-3 max-w-xl">
+        <div className="flex flex-col items-center text-center gap-3 pb-2 max-w-xl">
           <div className="font-mono text-[9px] uppercase tracking-widest text-white/30">inteligencia artificial</div>
           <h1 style={{
             fontFamily: "'Cormorant Garamond', serif",
@@ -128,7 +128,7 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl pb-8 md:pb-0">
           <div onClick={() => router.push('/diagnostico')} className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
             <div className="text-white/40 text-sm">◎</div>
             <div className="text-white/75 text-sm font-medium">Diagnóstico rápido</div>
