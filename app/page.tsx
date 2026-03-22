@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
@@ -99,7 +99,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative overflow-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ParticleCanvas />
-      </div>      {/* Main — todo centrado en pantalla */}
+      </div>      {/* Main â€” todo centrado en pantalla */}
       <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-16 h-screen">
 
         {/* Hero IA */}
@@ -116,43 +116,43 @@ export default function Home() {
             Tu planning semanal,<br />generado por IA
           </h1>
           <p className="text-white/42 text-sm leading-relaxed max-w-md">
-            Responde unas preguntas sobre tu rutina y recibe un planning completamente personalizado. Hábitos, estudio, deporte, descanso.
+            Responde unas preguntas sobre tu rutina y recibe un planning completamente personalizado. HÃ¡bitos, estudio, deporte, descanso.
           </p>
           <div className="font-mono text-[8px] text-white/28 tracking-widest">
-            8 preguntas · planning 7 días · 3 hábitos clave
+            8 preguntas Â· planning 7 dÃ­as Â· 3 hÃ¡bitos clave
           </div>
           <button
             onClick={() => user ? router.push('/chat') : router.push('/login')}
             className="mt-2 bg-white text-[#080808] font-medium px-10 py-3 text-xs tracking-wide rounded-md hover:bg-white/90 transition-colors"
           >
-            Crear mi planning →
+            Crear mi planning â†’
           </button>
         </div>
 
         {/* 4 Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl">
           <div onClick={() => router.push('/diagnostico')} className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
-            <div className="text-white/40 text-sm">◎</div>
-            <div className="text-white/75 text-sm font-medium">Diagnóstico rápido</div>
-            <div className="text-white/32 text-xs leading-relaxed">Descubre cuánto tiempo pierdes con el móvil y cómo recuperarlo.</div>
+            <div className="text-white/40 text-sm">â—Ž</div>
+            <div className="text-white/75 text-sm font-medium">DiagnÃ³stico rÃ¡pido</div>
+            <div className="text-white/32 text-xs leading-relaxed">Descubre cuÃ¡nto tiempo pierdes con el mÃ³vil y cÃ³mo recuperarlo.</div>
             <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">test interactivo</div>
           </div>
           <div onClick={() => router.push('/pomodoro')} className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
-            <div className="text-white/40 text-sm">◷</div>
+            <div className="text-white/40 text-sm">â—·</div>
             <div className="text-white/75 text-sm font-medium">Pomodoro</div>
             <div className="text-white/32 text-xs leading-relaxed">Temporizador de estudio con bloques de foco y descanso.</div>
-            <div className="font-mono text-[8px] uppercase tracking-wider text-white/50 mt-1">ir a pomodoro →</div>
+            <div className="font-mono text-[8px] uppercase tracking-wider text-white/50 mt-1">ir a pomodoro â†’</div>
           </div>
           <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
-            <div className="text-white/40 text-sm">✦</div>
-            <div className="text-white/75 text-sm font-medium">Artículos</div>
-            <div className="text-white/32 text-xs leading-relaxed">Reflexiones sobre hábitos, energía y desarrollo personal.</div>
-            <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">próximamente</div>
+            <div className="text-white/40 text-sm">âœ¦</div>
+            <div className="text-white/75 text-sm font-medium">ArtÃ­culos</div>
+            <div className="text-white/32 text-xs leading-relaxed">Reflexiones sobre hÃ¡bitos, energÃ­a y desarrollo personal.</div>
+            <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">prÃ³ximamente</div>
           </div>
           <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.16] transition-all cursor-pointer flex flex-col gap-2">
-            <div className="text-white/40 text-sm">✎</div>
-            <div className="text-white/75 text-sm font-medium">Por qué lo hice</div>
-            <div className="text-white/32 text-xs leading-relaxed">La historia detrás de pbfocus y por qué creo en esto.</div>
+            <div className="text-white/40 text-sm">âœŽ</div>
+            <div className="text-white/75 text-sm font-medium">Por quÃ© lo hice</div>
+            <div className="text-white/32 text-xs leading-relaxed">La historia detrÃ¡s de pbfocus y por quÃ© creo en esto.</div>
             <div className="font-mono text-[8px] uppercase tracking-wider text-white/20 mt-1">sobre pbfocus</div>
           </div>
         </div>
@@ -161,4 +161,5 @@ export default function Home() {
     </div>
   )
 }
+
 
