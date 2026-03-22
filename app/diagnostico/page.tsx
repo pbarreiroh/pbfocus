@@ -61,57 +61,89 @@ const QUESTIONS = [
 export default function Diagnostico() {
   const router = useRouter()
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [panel, setPanel] = useState<{ qIdx: number; optIdx: number } | null>(null)
-
-  const currentPanel = panel !== null
-    ? QUESTIONS[panel.qIdx].options[panel.optIdx]
-    : null
+  const [openQ, setOpenQ] = useState<string | null>(null)
+  const [panelData, setPanelData] = useState<{title:string; steps:string[]; cta?:{text:string;href:string}} | null>(null)
 
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] font-sans relative">
 
-      <main className="max-w-3xl mx-auto px-6 py-10 space-y-8">
+      <main className="max-w-5xl mx-auto px-12 md:px-20 py-10 space-y-8">
 
         {/* Hero */}
-        <div className="space-y-3">
+        <div className="space-y-3 pt-8">
           <div className="font-mono text-[9px] uppercase tracking-widest text-white/28">diagnóstico rápido</div>
-          <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'clamp(28px,4vw,42px)', color:'white', lineHeight:1.05}}>
+          <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'clamp(36px,5vw,58px)', color:'white', lineHeight:1.05}}>
             Tu primer paso empieza aquí.
           </h1>
-          <p className="text-white/42 text-sm leading-relaxed max-w-lg">
+          <p className="text-white/45 text-base leading-relaxed max-w-xl">
             No vengo a darte la chapa. Responde estas preguntas, recibe una solución directa y ponla en práctica hoy. Fácil y sencillo, así es como se empieza.
           </p>
         </div>
 
         {/* Grid de preguntas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {QUESTIONS.map((q, qi) => {
             const selected = answers[q.id]
             return (
-              <div key={q.id}
-                onClick={() => setPanel({ qIdx: qi, optIdx: q.options.findIndex(o => o.label === selected) >= 0 ? q.options.findIndex(o => o.label === selected) : 0 })}
-                className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.18] transition-all cursor-pointer flex flex-col gap-3"
-              >
-                <div className="font-mono text-[9px] text-white/22">{String(qi + 1).padStart(2, '0')}</div>
-                <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'15px', color:'rgba(255,255,255,0.85)', lineHeight:1.3}}>{q.question}</div>
-                {selected ? (
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/50 shrink-0" />
-                    <span className="font-mono text-[9px] text-white/55 uppercase tracking-wider">{selected}</span>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-1.5">
-                    {q.options.slice(0, 3).map(o => (
-                      <span key={o.label} className="font-mono text-[8px] text-white/28 border border-white/[0.07] rounded-full px-2 py-0.5">{o.label.length > 18 ? o.label.slice(0, 18) + '…' : o.label}</span>
-                    ))}
+              <div key={q.id} className="space-y-0">
+                <div
+                  onClick={() => setOpenQ(openQ === q.id ? null : q.id)}
+                  className="border border-white/[0.08] rounded-xl p-6 bg-white/[0.01] hover:bg-white/[0.03] hover:border-white/[0.18] transition-all cursor-pointer flex flex-col gap-3 h-full"
+                >
+                  <div className="font-mono text-[10px] text-white/22">{String(qi + 1).padStart(2, '0')}</div>
+                  <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'17px', color:'rgba(255,255,255,0.85)', lineHeight:1.3}}>{q.question}</div>
+                  {selected ? (
+                    <div className="flex items-center gap-2 mt-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/50 shrink-0" />
+                      <span className="font-mono text-[9px] text-white/55 uppercase tracking-wider">{selected}</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                      {q.options.slice(0, 3).map(o => (
+                        <span key={o.label} className="font-mono text-[8px] text-white/28 border border-white/[0.07] rounded-full px-2 py-0.5">{o.label.length > 18 ? o.label.slice(0, 18) + '…' : o.label}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Opciones desplegables inline */}
+                {openQ === q.id && (
+                  <div className="border border-white/[0.08] rounded-xl overflow-hidden bg-white/[0.01] -mt-1 z-10 relative">
+                    {q.options.map((opt) => {
+                      const isSelected = answers[q.id] === opt.label
+                      return (
+                        <div key={opt.label}>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setAnswers(prev => ({...prev, [q.id]: isSelected ? '' : opt.label})) }}
+                            className={`w-full text-left px-5 py-3.5 border-b border-white/[0.05] last:border-0 transition-all text-sm ${isSelected ? 'text-white/90 bg-white/[0.04]' : 'text-white/55 hover:text-white/75 hover:bg-white/[0.02]'}`}
+                          >
+                            {opt.label}
+                          </button>
+                          {isSelected && (
+                            <div className="px-5 py-4 border-t border-white/[0.05] space-y-3 bg-white/[0.02]">
+                              <p className="text-white/52 text-sm leading-relaxed italic font-serif">{opt.micro}</p>
+                              {opt.panel && (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setPanelData(opt.panel) }}
+                                  className="font-mono text-[9px] text-white/40 hover:text-white/70 transition-colors uppercase tracking-widest border border-white/[0.08] hover:border-white/20 px-3 py-1.5 rounded"
+                                >
+                                  Ver guía completa →
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>
             )
           })}
+          
           <div
             onClick={() => router.push('/chat')}
-            className="border border-white/[0.05] rounded-xl p-5 bg-white/[0.005] hover:bg-white/[0.02] transition-all cursor-pointer flex items-center justify-center"
+            className="border border-white/[0.05] rounded-xl p-6 bg-white/[0.005] hover:bg-white/[0.02] transition-all cursor-pointer flex items-center justify-center min-h-[120px]"
           >
             <span className="font-mono text-[9px] text-white/30 uppercase tracking-widest">¿Quieres un plan completo? → IA</span>
           </div>
@@ -119,98 +151,31 @@ export default function Diagnostico() {
 
       </main>
 
-      {/* Panel overlay */}
-      {panel !== null && currentPanel && (
-        <div className="fixed inset-0 bg-[#080808] z-50 overflow-y-auto">
-          <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
-
-            {/* Header */}
+      {/* Panel overlay - Modal para la guía completa */}
+      {panelData && (
+        <div className="fixed inset-0 bg-[#080808]/95 backdrop-blur z-50 flex items-start justify-center overflow-y-auto">
+          <div className="max-w-xl w-full mx-auto px-6 py-12 space-y-6">
             <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1">
-                <div className="font-mono text-[9px] text-white/28 uppercase tracking-widest">
-                  {String(panel.qIdx + 1).padStart(2, '0')} — {QUESTIONS[panel.qIdx].question}
-                </div>
-              </div>
-              <button
-                onClick={() => setPanel(null)}
-                className="border border-white/[0.12] text-white/40 hover:text-white hover:border-white/30 w-8 h-8 rounded-lg flex items-center justify-center font-mono text-sm transition-colors shrink-0"
-              >
+              <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'24px', color:'white', lineHeight:1.2}}>{panelData.title}</div>
+              <button onClick={() => setPanelData(null)}
+                className="border border-white/[0.12] text-white/40 hover:text-white hover:border-white/30 w-8 h-8 rounded-lg flex items-center justify-center font-mono text-sm transition-colors shrink-0">
                 ✕
               </button>
             </div>
-
-            {/* Opciones */}
-            <div className="space-y-2">
-              {QUESTIONS[panel.qIdx].options.map((opt, oi) => {
-                const isSelected = answers[QUESTIONS[panel.qIdx].id] === opt.label
-                return (
-                  <div key={opt.label}>
-                    <button
-                      onClick={() => setAnswers(prev => ({ ...prev, [QUESTIONS[panel.qIdx].id]: opt.label }))}
-                      className={`w-full text-left px-4 py-3 rounded-xl border transition-all ${
-                        isSelected
-                          ? 'border-white/30 bg-white/[0.05] text-white/90'
-                          : 'border-white/[0.08] text-white/55 hover:border-white/20 hover:text-white/75'
-                      }`}
-                    >
-                      <span className="text-sm">{opt.label}</span>
-                    </button>
-                    {isSelected && (
-                      <div className="mt-2 px-4 space-y-3">
-                        <p className="text-white/52 text-sm leading-relaxed italic">{opt.micro}</p>
-                        {opt.panel && (
-                          <div className="border border-white/[0.08] rounded-xl p-5 bg-white/[0.02] space-y-4">
-                            <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'16px', color:'rgba(255,255,255,0.82)'}}>{opt.panel.title}</div>
-                            <div className="space-y-2.5">
-                              {opt.panel.steps.map((step, si) => (
-                                <div key={si} className="flex gap-3">
-                                  <span className="font-mono text-[9px] text-white/22 shrink-0 pt-0.5">{String(si + 1).padStart(2, '0')}</span>
-                                  <span className="text-white/52 text-sm leading-relaxed">{step}</span>
-                                </div>
-                              ))}
-                            </div>
-                            {opt.panel.cta && (
-                              <a href={opt.panel.cta.href} target="_blank" rel="noreferrer"
-                                className="inline-block border border-white/[0.12] text-white/45 hover:text-white hover:border-white/25 px-4 py-2 rounded text-xs font-mono transition-colors">
-                                {opt.panel.cta.text}
-                              </a>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+            <div className="space-y-3">
+              {panelData.steps.map((step, i) => (
+                <div key={i} className="flex gap-4">
+                  <span className="font-mono text-[9px] text-white/22 shrink-0 pt-1">{String(i+1).padStart(2,'0')}</span>
+                  <span className="text-white/60 text-sm leading-relaxed">{step}</span>
+                </div>
+              ))}
             </div>
-
-            {/* Navegación entre preguntas */}
-            <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
-              <button
-                onClick={() => setPanel(prev => prev && prev.qIdx > 0 ? { qIdx: prev.qIdx - 1, optIdx: 0 } : prev)}
-                disabled={panel.qIdx === 0}
-                className="font-mono text-[9px] text-white/30 hover:text-white/60 transition-colors disabled:opacity-20 uppercase tracking-widest"
-              >
-                ← anterior
-              </button>
-              <span className="font-mono text-[9px] text-white/20">{panel.qIdx + 1} / {QUESTIONS.length}</span>
-              {panel.qIdx < QUESTIONS.length - 1 ? (
-                <button
-                  onClick={() => setPanel(prev => prev ? { qIdx: prev.qIdx + 1, optIdx: 0 } : prev)}
-                  className="font-mono text-[9px] text-white/30 hover:text-white/60 transition-colors uppercase tracking-widest"
-                >
-                  siguiente →
-                </button>
-              ) : (
-                <button
-                  onClick={() => setPanel(null)}
-                  className="font-mono text-[9px] text-white/50 hover:text-white transition-colors uppercase tracking-widest"
-                >
-                  terminar ✓
-                </button>
-              )}
-            </div>
-
+            {panelData.cta && (
+              <a href={panelData.cta.href} target="_blank" rel="noreferrer"
+                className="inline-block border border-white/[0.15] text-white/55 hover:text-white hover:border-white/30 px-5 py-2.5 rounded text-xs font-mono transition-colors">
+                {panelData.cta.text}
+              </a>
+            )}
           </div>
         </div>
       )}
