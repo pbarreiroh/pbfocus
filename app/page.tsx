@@ -96,11 +96,11 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative overflow-hidden">
+    <div className="bg-[#080808] text-[#e8e8e8] flex flex-col font-sans relative h-screen overflow-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ParticleCanvas />
       </div>      {/* Main â€” todo centrado en pantalla */}
-      <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-16 h-screen">
+      <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-16">
 
         {/* Hero IA */}
         <div className="flex flex-col items-center text-center gap-3 max-w-xl">
@@ -161,5 +161,7 @@ export default function Home() {
     </div>
   )
 }
+
+
 
 
