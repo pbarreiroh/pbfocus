@@ -58,11 +58,22 @@ export default function Diagnostico() {
 
   return (
     <div className="min-h-screen bg-[#080808] text-[#e8e8e8] font-sans">
-      <main className="max-w-2xl mx-auto px-6 py-12 space-y-12">
-        <div className="space-y-2">
-          <div className="font-mono text-[9px] uppercase tracking-widest text-white/30">diagnóstico rápido</div>
-          <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'36px', color:'white', lineHeight:1.1}}>Elige tu situación,<br />recibe una solución.</h1>
-          <p className="text-white/40 text-sm leading-relaxed">No es un test de lo mal que estás. Es una guía para mejorar algo hoy.</p>
+      <main className="max-w-3xl mx-auto px-6 py-12 space-y-12">
+        <div className="border-b border-white/[0.05] pb-10 mb-4 flex items-end justify-between gap-8">
+          <div className="flex-1">
+            <div className="font-mono text-[9px] uppercase tracking-widest text-white/28 mb-3">diagnóstico rápido</div>
+            <h1 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'clamp(32px,4vw,46px)', color:'white', lineHeight:1.05, letterSpacing:'-0.5px', marginBottom:'14px'}}>
+              Tu primer paso<br />empieza aquí.
+            </h1>
+            <p className="text-white/42 text-sm leading-relaxed max-w-md">
+              No vengo a darte la chapa. Responde estas preguntas, recibe una solución directa y ponla en práctica hoy. Fácil y sencillo, así es como se empieza.
+            </p>
+          </div>
+          <div className="hidden md:flex flex-col gap-2 items-end shrink-0 pb-1">
+            <div className="font-mono text-[9px] text-white/25"><span className="text-white/55">5</span> preguntas</div>
+            <div className="font-mono text-[9px] text-white/25"><span className="text-white/55">5</span> soluciones</div>
+            <div className="font-mono text-[9px] text-white/25"><span className="text-white/55">~3 min</span> para leerlo</div>
+          </div>
         </div>
 
         {QUESTIONS.map((q, qi) => {
@@ -70,46 +81,52 @@ export default function Diagnostico() {
           const solution = selected ? SOLUTIONS[q.id]?.[selected] : null
           const isOpen = openPanels[q.id]
           return (
-            <div key={q.id} className="space-y-4">
-              <div className="space-y-3">
-                <div className="font-mono text-[9px] uppercase tracking-widest text-white/25">{String(qi + 1).padStart(2, '0')}</div>
-                <h2 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'20px', color:'rgba(255,255,255,0.85)'}}>{q.question}</h2>
-                <div className="flex flex-wrap gap-2">
-                  {q.options.map(opt => (
-                    <button key={opt} onClick={() => select(q.id, opt)}
-                      className={`px-4 py-2 rounded-full border font-mono text-[9px] uppercase tracking-wider transition-all ${selected === opt ? 'border-white/40 bg-white/[0.06] text-white/90' : 'border-white/[0.12] text-white/45 hover:border-white/25 hover:text-white/65'}`}>
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {solution && (
-                <div className="border border-white/[0.10] rounded-xl overflow-hidden bg-white/[0.01]">
-                  <button onClick={() => togglePanel(q.id)} className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02] transition-colors">
-                    <span style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'16px', color:'rgba(255,255,255,0.8)'}}>{solution.title}</span>
-                    <span className="font-mono text-white/30 text-xs ml-4 shrink-0">{isOpen ? '↑' : '↓'}</span>
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 space-y-4 border-t border-white/[0.06]">
-                      <div className="space-y-3 pt-4">
-                        {solution.steps.map((step, i) => (
-                          <div key={i} className="flex gap-3">
-                            <span className="font-mono text-[9px] text-white/25 shrink-0 pt-0.5">{String(i + 1).padStart(2, '0')}</span>
-                            <span className="text-white/55 text-sm leading-relaxed">{step}</span>
+            <div key={q.id} className="space-y-0">
+              <div className="py-7 flex gap-6 items-start">
+                <div className="font-mono text-[10px] text-white/20 min-w-[20px] pt-1">{String(qi + 1).padStart(2, '0')}</div>
+                <div className="flex-1 space-y-3">
+                  <h2 style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'19px', color:'rgba(255,255,255,0.88)', lineHeight:1.3}}>{q.question}</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {q.options.map(opt => (
+                      <button key={opt} onClick={() => select(q.id, opt)}
+                        className={`px-4 py-2 rounded-full border font-mono text-[9px] uppercase tracking-wider transition-all ${
+                          selected === opt
+                            ? 'border-white/40 bg-white/[0.06] text-white/90'
+                            : 'border-white/[0.12] text-white/45 hover:border-white/25 hover:text-white/65'
+                        }`}>
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                  {solution && (
+                    <div className="border border-white/[0.08] rounded-xl overflow-hidden bg-white/[0.01] mt-2">
+                      <button onClick={() => togglePanel(q.id)} className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-white/[0.02] transition-colors">
+                        <span style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'15px', color:'rgba(255,255,255,0.75)'}}>{solution.title}</span>
+                        <span className="font-mono text-white/25 text-xs ml-4 shrink-0">{isOpen ? '↑' : '↓'}</span>
+                      </button>
+                      {isOpen && (
+                        <div className="px-5 pb-5 border-t border-white/[0.05]">
+                          <div className="space-y-2.5 pt-4">
+                            {solution.steps.map((step, i) => (
+                              <div key={i} className="flex gap-3">
+                                <span className="font-mono text-[8px] text-white/22 shrink-0 pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                                <span className="text-white/52 text-sm leading-relaxed">{step}</span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                      {solution.cta && (
-                        <a href={solution.cta.href} target="_blank" rel="noreferrer"
-                          className="inline-block border border-white/[0.12] text-white/50 hover:text-white hover:border-white/25 px-4 py-2 rounded text-xs font-mono transition-colors">
-                          {solution.cta.text}
-                        </a>
+                          {solution.cta && (
+                            <a href={solution.cta.href} target="_blank" rel="noreferrer"
+                              className="inline-block border border-white/[0.12] text-white/45 hover:text-white hover:border-white/25 px-4 py-2 rounded text-xs font-mono transition-colors mt-4">
+                              {solution.cta.text}
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
                 </div>
-              )}
-              {qi < QUESTIONS.length - 1 && <div className="border-t border-white/[0.05]" />}
+              </div>
+              {qi < QUESTIONS.length - 1 && <div className="border-t border-white/[0.04]" />}
             </div>
           )
         })}

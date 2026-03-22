@@ -100,7 +100,7 @@ export default function Home() {
       <div className="fixed inset-0 z-0 pointer-events-none">
         <ParticleCanvas />
       </div>      {/* Main — todo centrado en pantalla */}
-      <main className="flex-1 flex flex-col items-center justify-center min-h-screen px-8 gap-10 z-10 pt-16">
+      <main className="flex-1 flex flex-col items-center justify-center px-8 gap-10 z-10 pt-16 h-screen">
 
         {/* Hero IA */}
         <div className="flex flex-col items-center text-center gap-3 max-w-xl">
@@ -161,3 +161,4 @@ export default function Home() {
     </div>
   )
 }
+

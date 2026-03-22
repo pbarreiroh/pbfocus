@@ -167,7 +167,7 @@ export default function Pomodoro() {
       <main className="flex-1 flex flex-col items-center justify-center pt-16 px-6 pb-12 gap-10 z-10">
 
         {/* Timer */}
-        <div className="flex flex-col items-center gap-8 w-full max-w-sm">
+        <div className="border border-white/[0.18] rounded-2xl p-8 bg-white/[0.02] flex flex-col items-center gap-8 w-full max-w-sm">
 
           {/* Modos */}
           <div className="flex gap-2">
@@ -176,8 +176,8 @@ export default function Pomodoro() {
                 key={m}
                 onClick={() => setMode(m)}
                 className={`px-4 py-1.5 rounded-full font-mono text-[9px] uppercase tracking-widest border transition-all ${mode === m
-                    ? 'border-white/30 text-white/90 bg-white/[0.06]'
-                    : 'border-white/[0.15] text-white/50 hover:border-white/30'
+                  ? 'border-white/30 text-white/90 bg-white/[0.06]'
+                  : 'border-white/[0.15] text-white/50 hover:border-white/30'
                   }`}
               >
                 {MODES[m].label}
@@ -247,7 +247,7 @@ export default function Pomodoro() {
             </div>
           )}
 
-          <div className="font-mono text-[9px] text-white/40 uppercase tracking-widest text-center">
+          <div className="font-mono text-[9px] text-white/60 uppercase tracking-widest text-center">
             {mode === 'focus' ? '¡Hora de concentrarse!' : mode === 'short' ? 'Respira, estira, hidratate.' : 'Buen trabajo. Descansa bien.'}
           </div>
         </div>
@@ -255,7 +255,7 @@ export default function Pomodoro() {
         {/* Tareas */}
         <div className="w-full max-w-sm space-y-3">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-white/50">Tareas</span>
+            <span className="font-mono text-[9px] uppercase tracking-widest text-white/60">Tareas</span>
             {tasks.length > 0 && (
               <span className="font-mono text-[9px] text-white/40">{tasks.filter(t => t.done).length}/{tasks.length}</span>
             )}

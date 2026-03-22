@@ -60,7 +60,7 @@ export default function GlobalNav() {
         ) : (
           <button
             onClick={() => router.push('/login')}
-            className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors"
+            className="font-mono text-[11px] uppercase tracking-widest text-white/80 hover:text-white transition-colors border border-white/30 hover:border-white/60 px-4 py-1.5 rounded-full"
           >
             Iniciar sesión →
           </button>
