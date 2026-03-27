@@ -164,10 +164,10 @@ export default function Pomodoro() {
         <ParticleCanvas />
       </div>
 
-      <main className="flex-1 flex flex-col items-center justify-center pt-24 md:pt-16 px-6 pb-12 gap-10 z-10">
+      <main className="flex-1 flex flex-col items-center justify-center pt-20 md:pt-8 px-6 pb-12 gap-10 z-10">
 
         {/* Timer */}
-        <div className="border border-white/[0.18] rounded-2xl p-8 bg-white/[0.02] flex flex-col items-center gap-8 w-full max-w-sm">
+        <div className="border border-white/[0.18] rounded-2xl p-8 mt-4 bg-white/[0.02] flex flex-col items-center gap-8 w-full max-w-sm">
 
           {/* Modos */}
           <div className="flex gap-2">

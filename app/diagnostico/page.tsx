@@ -95,10 +95,10 @@ export default function Diagnostico() {
                     : 'border-white/[0.08] bg-white/[0.01] hover:border-white/[0.18] hover:bg-white/[0.025]'
                 }`}
               >
-                <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'18px', color:'rgba(255,255,255,0.88)', lineHeight:1.35, marginBottom:'10px'}}>
+                <div style={{fontFamily:"'Cormorant Garamond', serif", fontStyle:'italic', fontSize:'20px', color:'rgba(255,255,255,0.88)', lineHeight:1.35, marginBottom:'10px'}}>
                   {q.question}
                 </div>
-                <div className="font-mono text-[9px] text-white/30 uppercase tracking-widest">
+                <div className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
                   {answers[q.id]
                     ? <span className="text-white/55">✓ {answers[q.id]}</span>
                     : 'toca para responder'
@@ -112,7 +112,7 @@ export default function Diagnostico() {
                     <button
                       key={opt.label}
                       onClick={() => selectOpt(q.id, opt)}
-                      className={`w-full text-left px-6 py-4 border-b border-white/[0.05] last:border-0 transition-all text-sm ${
+                      className={`w-full text-left px-6 py-5 border-b border-white/[0.05] last:border-0 transition-all text-base ${
                         answers[q.id] === opt.label
                           ? 'bg-white/[0.05] text-white/90'
                           : 'text-white/55 hover:bg-white/[0.025] hover:text-white/78'

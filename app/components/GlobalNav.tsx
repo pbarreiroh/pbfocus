@@ -39,7 +39,7 @@ export default function GlobalNav() {
         }}>pbfocus</button>
 
         <div className="hidden md:flex items-center gap-8">
-          <button onClick={() => router.push('/chat')} className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors">IA</button>
+          <button onClick={() => router.push('/login')} className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors">IA</button>
           <button onClick={() => router.push('/diagnostico')} className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors">Diagnóstico</button>
           <button onClick={() => router.push('/pomodoro')} className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors">Pomodoro</button>
           <button onClick={() => router.push('/articulos')} className="font-mono text-[11px] uppercase tracking-widest text-white/70 hover:text-white transition-colors">Artículos</button>
